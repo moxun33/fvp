@@ -1,4 +1,4 @@
-//播放状态
+//play state
 class FvpPlayState {
   static const notRunning = 0;
   static const stopped = notRunning;
@@ -9,7 +9,7 @@ class FvpPlayState {
   static const paused = 2;
 }
 
-//媒体状态
+//media status
 class FvpMediaStatus {
   static const noMedia =
       0; // initial status, not invalid. // what if set an empty url and closed?

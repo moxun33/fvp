@@ -68,13 +68,16 @@ class _MyAppState extends State<MyApp> {
       switch (data['category']) {
         case 'reader.buffering':
           final percent = data['error'].toInt();
-          String _tip = '';
           if (percent < 100) {
-            _tip = 'buffering $percent%';
+            setState(() {
+              tip = 'buffering $percent%';
+            });
+          } else {
+            setState(() {
+              tip = '';
+            });
           }
-          setState(() {
-            tip = _tip;
-          });
+
           break;
         default:
           break;
