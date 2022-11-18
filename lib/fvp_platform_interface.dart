@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 import 'fvp_method_channel.dart';
@@ -29,5 +30,68 @@ abstract class FvpPlatform extends PlatformInterface {
 
   Future<int> createTexture() {
     throw UnimplementedError('createTexture() has not been implemented.');
+  }
+
+  Future<int> setMedia(String url) {
+    throw UnimplementedError('setMedia() has not been implemented.');
+  }
+
+  Future<int> playOrPause() {
+    throw UnimplementedError('playOrPause() has not been implemented.');
+  }
+
+  Future<int> stop() {
+    throw UnimplementedError('stop() has not been implemented.');
+  }
+
+  Future<Map<String, dynamic>?> getMediaInfo() {
+    throw UnimplementedError('getMediaInfo() has not been implemented.');
+  }
+
+  Future<int> setVolume(double v) {
+    throw UnimplementedError('setVolume() has not been implemented.');
+  }
+
+  Future<int> setMute(bool v) {
+    throw UnimplementedError('setMute() has not been implemented.');
+  }
+
+  Future<int> setTimeout(int v) {
+    throw UnimplementedError('setTimeout() has not been implemented.');
+  }
+
+  Future<int> getState() {
+    throw UnimplementedError('getState() has not been implemented.');
+  }
+
+  Future<int> getStatus() {
+    throw UnimplementedError('getStatus() has not been implemented.');
+  }
+
+  Future<String?> snapshot() {
+    throw UnimplementedError('snapshot() has not been implemented.');
+  }
+
+//get volume
+  Future<double> volume() {
+    throw UnimplementedError('volume() has not been implemented.');
+  }
+
+  Future<int> setUserAgent(String? ua) {
+    throw UnimplementedError('setUserAgent() has not been implemented.');
+  }
+
+  void onStateChanged(void Function(String state)? cb) {
+    throw UnimplementedError('onStateChanged() has not been implemented.');
+  }
+
+  void onMediaStatusChanged(void Function(String status)? cb) {
+    throw UnimplementedError(
+        'onMediaStatusChanged() has not been implemented.');
+  }
+
+  void onEvent(void Function(Map<String, dynamic> data)? cb) {
+    throw UnimplementedError(
+        'onMediaStatusChanged() has not been implemented.');
   }
 }

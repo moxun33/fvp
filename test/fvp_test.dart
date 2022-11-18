@@ -4,12 +4,18 @@ import 'package:fvp/fvp_platform_interface.dart';
 import 'package:fvp/fvp_method_channel.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
-class MockFvpPlatform
-    with MockPlatformInterfaceMixin
-    implements FvpPlatform {
-
+class MockFvpPlatform with MockPlatformInterfaceMixin implements FvpPlatform {
   @override
   Future<String?> getPlatformVersion() => Future.value('42');
+
+  @override
+  Future<int> createTexture() {
+    // TODO: implement createTexture
+    throw UnimplementedError();
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
 void main() {

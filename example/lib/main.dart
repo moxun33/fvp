@@ -18,46 +18,145 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   final _fvpPlugin = Fvp();
   int? _textureId;
-
+  String tip = '';
+  final TextEditingController _urlController = TextEditingController();
   @override
   void initState() {
     super.initState();
-    initPlatformState();
+    initFvp();
   }
 
-  // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initPlatformState() async {
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (!mounted) return;
+  Future<void> initFvp() async {
+    await updateTexture();
+    play(
+        'https://cn-jlcc-cu-03-08.bilivideo.com/live-bvc/352605/live_415611_4082642/index.m3u8');
+  }
 
-    int textureId = await _fvpPlugin.createTexture();
+  Future<int> updateTexture() async {
+    if (_textureId != null) {
+      await stop();
+    }
 
-    print('textureId: $_textureId');
+    int ttId = await _fvpPlugin.createTexture();
     setState(() {
-      _textureId = textureId;
+      _textureId = ttId;
     });
+    debugPrint('textureId: $ttId');
+
+    return ttId;
+  }
+
+  void play(url) async {
+    setState(() {
+      tip = 'opening';
+    });
+    updateTexture();
+    await _fvpPlugin.setMedia(url);
+    _fvpPlugin.onStateChanged((String state) {
+      debugPrint("-------------------state change $state");
+    });
+    _fvpPlugin.onMediaStatusChanged((String status) {
+      debugPrint("============medias status change $status");
+      if (status == '-2147483648') {
+        setState(() {
+          tip = 'playing failed';
+        });
+      }
+    });
+    _fvpPlugin.onEvent((Map<String, dynamic> data) {
+      debugPrint("******on media event ${data}");
+      switch (data['category']) {
+        case 'reader.buffering':
+          final percent = data['error'].toInt();
+          String _tip = '';
+          if (percent < 100) {
+            _tip = 'buffering $percent%';
+          }
+          setState(() {
+            tip = _tip;
+          });
+          break;
+        default:
+          break;
+      }
+    });
+  }
+
+  void playOrPause() {
+    _fvpPlugin.playOrPause();
+    getMediaInfo();
+  }
+
+  Future<int> stop() async {
+    _textureId = null;
+    return _fvpPlugin.stop();
+  }
+
+  void getMediaInfo() async {
+    final res = await _fvpPlugin.getMediaInfo();
+    debugPrint('media info $res');
+    // _fvpPlugin.snapshot();
   }
 
   @override
   Widget build(BuildContext context) {
-    print('build textureId: $_textureId');
+    debugPrint('build textureId: $_textureId');
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('Flutter Video Player based on libmdk. textureId: $_textureId'),
-        ),
-        body: Center(
-          child: AspectRatio(
-            aspectRatio: 16.0/9.0,
-            child: _textureId == null ? null : Texture(
-                  textureId: _textureId!,
-                  filterQuality: FilterQuality.high,
-                ),
-          )
-        ),
-      ),
-    );
+        home: Scaffold(
+            appBar: AppBar(
+              title: Text(
+                  'Flutter Video Player based on libmdk. textureId: $_textureId'),
+            ),
+            body: Stack(children: [
+              Container(
+                  color: Colors.black,
+                  child: _textureId != null
+                      ? Center(
+                          child: AspectRatio(
+                            aspectRatio: 16 / 9,
+                            child: Texture(
+                              textureId: _textureId!,
+                              filterQuality: FilterQuality.high,
+                            ),
+                          ),
+                        )
+                      : const SizedBox()),
+              Positioned(
+                  bottom: 10,
+                  child: Container(
+                    padding: const EdgeInsets.all(10),
+                    width: 500,
+                    height: 100,
+                    color: Colors.transparent,
+                    child: Text(
+                      tip,
+                      style: const TextStyle(color: Colors.amber),
+                    ),
+                  )),
+              Row(
+                children: [
+                  Container(
+                    width: 500,
+                    padding: const EdgeInsets.only(left: 120),
+                    child: TextField(
+                      decoration:
+                          const InputDecoration(hintText: 'input video url'),
+                      controller: _urlController,
+                    ),
+                  ),
+                  TextButton(
+                      child: const Text('play'),
+                      onPressed: () => play(_urlController.text)),
+                  ElevatedButton(
+                      child: const Text('play/pause'),
+                      onPressed: () => playOrPause()),
+                  TextButton(
+                      child: const Text('stop'),
+                      onPressed: () {
+                        stop();
+                      }),
+                ],
+              ),
+            ])));
   }
 }
