@@ -194,12 +194,12 @@ namespace fvp
               std::cout << "to set new url media" << std::endl;
             player_.setNextMedia(nullptr,-1);
             player_.set(State::Stopped);
-            player_.waitFor(State::Stopped);
+           // player_.waitFor(State::Stopped);
 
             player_.setMedia(nullptr);
             player_.setMedia(url.c_str());
             player_.set(State::Playing);
-            player_.waitFor(State::Playing);
+           // player_.waitFor(State::Playing);
 
             // player_.setActiveTracks(MediaType::Video,std::set(0));
            // auto &c = player_.mediaInfo().video[0].codec;
@@ -279,12 +279,12 @@ namespace fvp
             if (player_.state() == State::Playing)
             {
                 player_.set(State::Paused);
-                player_.waitFor(State::Paused);
+              //  player_.waitFor(State::Paused);
             }
             else
             {
                 player_.set(State::Playing);
-                 player_.waitFor(State::Playing);
+               //  player_.waitFor(State::Playing);
             }
             result->Success(EncodableValue(1));
         }
