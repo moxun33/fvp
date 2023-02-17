@@ -28,8 +28,7 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> initFvp() async {
     await updateTexture();
-    play(
-        'https://cn-jlcc-cu-03-08.bilivideo.com/live-bvc/352605/live_415611_4082642/index.m3u8');
+    play('http://localhost:35455/douyu/4549169');
   }
 
   Future<int> updateTexture() async {
