@@ -108,6 +108,16 @@ class MethodChannelFvp extends FvpPlatform {
   }
 
   @override
+  Future<int> position() async {
+    return (await methodChannel.invokeMethod('position')) as int;
+  }
+
+  @override
+  Future<int> buffered() async {
+    return (await methodChannel.invokeMethod('buffered')) as int;
+  }
+
+  @override
   Future<int> stop() async {
     return (await methodChannel.invokeMethod('stop')) as int;
   }
@@ -161,6 +171,13 @@ class MethodChannelFvp extends FvpPlatform {
         break;
       case "onEvent":
         eventCb(Map<String, dynamic>.from(args));
+        break;
+      case "onRenderCallback":
+        renderCb(args.toString());
+
+        break;
+      case "onLog":
+        logHandler(args.toString());
 
         break;
       default:
@@ -171,6 +188,8 @@ class MethodChannelFvp extends FvpPlatform {
   Function stateChangeCb = () {};
   Function mediaStatusChangeCb = () {};
   Function eventCb = () {};
+  Function renderCb = () {};
+  Function logHandler = () {};
   @override
   void onStateChanged(void Function(String state)? cb) {
     if (cb != null) {
@@ -195,7 +214,19 @@ class MethodChannelFvp extends FvpPlatform {
   @override
   void onRenderCallback(void Function(String msg)? cb) {
     if (cb != null) {
-      eventCb = cb;
+      renderCb = cb;
     }
+  }
+
+  @override
+  Future<void> setLogHandler(void Function(String msg)? cb,
+      {LogLevel? level}) async {
+    if (cb != null) {
+      logHandler = cb;
+    }
+    if (level != null) {
+      setLogLevel(level);
+    }
+    (await methodChannel.invokeMethod('setLogHandler', {}));
   }
 }

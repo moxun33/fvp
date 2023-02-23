@@ -21,7 +21,7 @@ class _MyAppState extends State<MyApp> {
   int? _textureId;
   String tip = '';
   final TextEditingController _urlController = TextEditingController(
-      text: 'https://hdltctwk.douyucdn2.cn/live/5033502r1DnQtDRG.xs');
+      text: 'https://hdltctwk.douyucdn2.cn/live/4549169rYnH7POVF.m3u8');
   @override
   void initState() {
     super.initState();
@@ -104,7 +104,13 @@ class _MyAppState extends State<MyApp> {
       }
     });
     _fvp.onRenderCallback((String msg) {
-      print('rendermsg $msg');
+      //   print('rendermsg $msg');
+    });
+    _fvp.setLogHandler((msg) async {
+      print('log msg $msg');
+      final pos = await _fvp.position();
+      final buff = await _fvp.buffered();
+      print('pos: $pos   buffered: $buff');
     });
   }
 

@@ -173,15 +173,15 @@ namespace fvp
                                    {
                                    // printf("state changed to %d ", s);
                                  channel->InvokeMethod("onStateChanged",std::make_unique<flutter::EncodableValue>(EncodableValue(static_cast<int>(s)))); });
-            player_.setRenderCallback([&](void* s)
+            player_.setRenderCallback([&](void *s)
                                       {
-
-                                        std::cout << ">> =*=*[renderCallback]: " << s << std::endl;
-
-                                         
+                                      
+                                        
                                         player_.renderVideo();
                                         texture_registrar_->MarkTextureFrameAvailable(texture_id_);
-                                       /*  channel->InvokeMethod("onRenderCallback",std::make_unique<flutter::EncodableValue>(EncodableValue(s)));  */ });
+                                        channel->InvokeMethod("onRenderCallback",std::make_unique<flutter::EncodableValue>(EncodableValue(s))); });
+
+            // player_.onFrame<VideoFrame>([&](VideoFrame& v, int){});
         }
 
         if (methodName == "setLogLevel")
@@ -194,8 +194,18 @@ namespace fvp
             }
 
             SetGlobalOption("log", t);
+
+            result->Success(EncodableValue(1));
+        }
+        if (methodName == "setLogHandler")
+        {
+
             setLogHandler([&](LogLevel l, const char *s)
-                          { std::cout << "*=[log msg]: " << s << std::endl; });
+                          {
+                              channel->InvokeMethod("onLog", std::make_unique<flutter::EncodableValue>(EncodableValue(s)));
+                              // std::cout << "*=[log msg]: " << s << std::endl;
+                          });
+
             result->Success(EncodableValue(1));
         }
         if (methodName == "stop")
@@ -210,7 +220,7 @@ namespace fvp
         }
         if (methodName == "setMedia")
         {
-            std::cout << "to set new media" << std::endl;
+           // std::cout << "to set new media" << std::endl;
             auto url_it = argsList->find(flutter::EncodableValue("url"));
             std::string url;
             if (url_it != argsList->end())
@@ -243,7 +253,7 @@ namespace fvp
             {
                 url = std::get<std::string>(url_it->second);
             }
-            std::cout << "to set new off screen media" << url << std::endl;
+        //    std::cout << "to set new off screen media" << url << std::endl;
 
             player_.setMedia(url.c_str());
             player_.prepare(0LL, [&](int64_t position, bool *)
@@ -437,6 +447,16 @@ namespace fvp
         {
             float t = player_.volume();
             result->Success(EncodableValue((float)(t)));
+        }
+        if (methodName == "position")
+        {
+            int64_t t = player_.position();
+            result->Success(EncodableValue((int64_t)(t)));
+        }
+        if (methodName == "buffered")
+        {
+            int64_t t = player_.buffered();
+            result->Success(EncodableValue((int64_t)(t)));
         }
         else
         {

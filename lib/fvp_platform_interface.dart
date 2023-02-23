@@ -86,6 +86,16 @@ abstract class FvpPlatform extends PlatformInterface {
     throw UnimplementedError('volume() has not been implemented.');
   }
 
+//get position
+  Future<int> position() {
+    throw UnimplementedError('position() has not been implemented.');
+  }
+
+//get buffered
+  Future<int> buffered() {
+    throw UnimplementedError('buffered() has not been implemented.');
+  }
+
   Future<int> setUserAgent(String? ua) {
     throw UnimplementedError('setUserAgent() has not been implemented.');
   }
@@ -113,5 +123,9 @@ abstract class FvpPlatform extends PlatformInterface {
 
   void onEvent(void Function(Map<String, dynamic> data)? cb) {
     throw UnimplementedError('onEvent() has not been implemented.');
+  }
+
+  void setLogHandler(void Function(String data)? cb, {LogLevel? level}) {
+    throw UnimplementedError('setLogHandler() has not been implemented.');
   }
 }

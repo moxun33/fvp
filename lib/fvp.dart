@@ -83,6 +83,14 @@ class Fvp {
     return FvpPlatform.instance.volume();
   }
 
+  Future<int> position() {
+    return FvpPlatform.instance.position();
+  }
+
+  Future<int> buffered() {
+    return FvpPlatform.instance.buffered();
+  }
+
   Future<int> stop() {
     return FvpPlatform.instance.stop();
   }
@@ -117,5 +125,9 @@ class Fvp {
 
   void onRenderCallback(void Function(String msg)? cb) {
     return FvpPlatform.instance.onRenderCallback(cb);
+  }
+
+  void setLogHandler(void Function(String msg)? cb, {LogLevel? level}) {
+    return FvpPlatform.instance.setLogHandler(cb, level: level);
   }
 }
