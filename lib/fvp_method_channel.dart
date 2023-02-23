@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:fvp/fvp_utils.dart';
 
 import 'fvp_platform_interface.dart';
 
@@ -35,6 +36,16 @@ class MethodChannelFvp extends FvpPlatform {
       // throw ArgumentError('url 不能为空');
     }
     return (await methodChannel.invokeMethod('setMedia', {'url': url})) as int;
+  }
+
+  @override
+  Future<int> getOffScreenMediaInfo(String? url) async {
+    if (!(url != null && url.isNotEmpty)) {
+      return 0;
+      // throw ArgumentError('url 不能为空');
+    }
+    return (await methodChannel
+        .invokeMethod('getOffScreenMediaInfo', {'url': url})) as int;
   }
 
   @override
@@ -102,9 +113,34 @@ class MethodChannelFvp extends FvpPlatform {
   }
 
   @override
+  Future<int> setLogLevel(LogLevel l) async {
+    return (await methodChannel.invokeMethod('setLogLevel', {'level': l}))
+        as int;
+  }
+
+  @override
   Future<int> setUserAgent(String? ua) async {
-    return (await methodChannel
-        .invokeMethod('setUserAgent', {'ua': ua ?? 'VVibe ZTE'}) as int);
+    return (await methodChannel.invokeMethod('setUserAgent', {
+      'ua': ua ??
+          "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36 FVP ZTE"
+    }) as int);
+  }
+
+  @override
+  Future<int> setHeaders(Map<String, String>? headers) async {
+    String head = "";
+    headers?.forEach((key, value) {
+      head = '$head$key: $value\r\n';
+    });
+    if (head.isEmpty) return 0;
+    return (await methodChannel.invokeMethod('setHeaders', {'headers': head})
+        as int);
+  }
+
+  @override
+  Future<String> getProperty(String key) async {
+    return (await methodChannel.invokeMethod('getProperty', {'key': key})
+        as String);
   }
 
   Future<void> _methodCallHandler(MethodCall call) async {
@@ -151,6 +187,13 @@ class MethodChannelFvp extends FvpPlatform {
 
   @override
   void onEvent(void Function(Map<String, dynamic> data)? cb) {
+    if (cb != null) {
+      eventCb = cb;
+    }
+  }
+
+  @override
+  void onRenderCallback(void Function(String msg)? cb) {
     if (cb != null) {
       eventCb = cb;
     }

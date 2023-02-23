@@ -21,6 +21,10 @@ class Fvp {
     return FvpPlatform.instance.setMedia(url.trim());
   }
 
+  Future<int> getOffScreenMediaInfo(String url) {
+    return FvpPlatform.instance.getOffScreenMediaInfo(url.trim());
+  }
+
   Future<int> playOrPause() {
     return FvpPlatform.instance.playOrPause();
   }
@@ -83,8 +87,20 @@ class Fvp {
     return FvpPlatform.instance.stop();
   }
 
+  Future<int> setLogLevel(LogLevel l) {
+    return FvpPlatform.instance.setLogLevel(l);
+  }
+
   Future<int> setUserAgent(String? ua) {
     return FvpPlatform.instance.setUserAgent(ua);
+  }
+
+  Future<String> getProperty(String key) {
+    return FvpPlatform.instance.getProperty(key);
+  }
+
+  Future<int> setHeaders(Map<String, String>? headers) {
+    return FvpPlatform.instance.setHeaders(headers);
   }
 
   void onStateChanged(void Function(String state)? cb) {
@@ -97,5 +113,9 @@ class Fvp {
 
   void onEvent(void Function(Map<String, dynamic> data)? cb) {
     return FvpPlatform.instance.onEvent(cb);
+  }
+
+  void onRenderCallback(void Function(String msg)? cb) {
+    return FvpPlatform.instance.onRenderCallback(cb);
   }
 }

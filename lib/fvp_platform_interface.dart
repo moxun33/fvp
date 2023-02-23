@@ -1,4 +1,5 @@
 import 'package:flutter/services.dart';
+import 'package:fvp/fvp_utils.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 import 'fvp_method_channel.dart';
@@ -36,12 +37,20 @@ abstract class FvpPlatform extends PlatformInterface {
     throw UnimplementedError('setMedia() has not been implemented.');
   }
 
+  Future<int> getOffScreenMediaInfo(String url) {
+    throw UnimplementedError('setMedia() has not been implemented.');
+  }
+
   Future<int> playOrPause() {
     throw UnimplementedError('playOrPause() has not been implemented.');
   }
 
   Future<int> stop() {
     throw UnimplementedError('stop() has not been implemented.');
+  }
+
+  Future<int> setLogLevel(LogLevel l) {
+    throw UnimplementedError('setLogLevel() has not been implemented.');
   }
 
   Future<Map<String, dynamic>?> getMediaInfo() {
@@ -81,6 +90,14 @@ abstract class FvpPlatform extends PlatformInterface {
     throw UnimplementedError('setUserAgent() has not been implemented.');
   }
 
+  Future<int> setHeaders(Map<String, String>? headers) {
+    throw UnimplementedError('setHeaders() has not been implemented.');
+  }
+
+  Future<String> getProperty(String key) {
+    throw UnimplementedError('getProperty() has not been implemented.');
+  }
+
   void onStateChanged(void Function(String state)? cb) {
     throw UnimplementedError('onStateChanged() has not been implemented.');
   }
@@ -90,8 +107,11 @@ abstract class FvpPlatform extends PlatformInterface {
         'onMediaStatusChanged() has not been implemented.');
   }
 
+  void onRenderCallback(void Function(String msg)? cb) {
+    throw UnimplementedError('onRenderCallback() has not been implemented.');
+  }
+
   void onEvent(void Function(Map<String, dynamic> data)? cb) {
-    throw UnimplementedError(
-        'onMediaStatusChanged() has not been implemented.');
+    throw UnimplementedError('onEvent() has not been implemented.');
   }
 }

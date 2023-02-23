@@ -16,10 +16,12 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final _fvpPlugin = Fvp();
+  final _fvp = Fvp();
+  final _offFvp = Fvp();
   int? _textureId;
   String tip = '';
-  final TextEditingController _urlController = TextEditingController();
+  final TextEditingController _urlController = TextEditingController(
+      text: 'https://hdltctwk.douyucdn2.cn/live/5033502r1DnQtDRG.xs');
   @override
   void initState() {
     super.initState();
@@ -28,7 +30,9 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> initFvp() async {
     await updateTexture();
-    play('https://hdltctwk.douyucdn2.cn/live/4549169rYnH7POVF.m3u8');
+    //  play('https://hdltctwk.douyucdn2.cn/live/4549169rYnH7POVF.m3u8');
+    //play('http://livehkkp.chinamcache.com/live/CCTV-xw_4000.m3u8');
+    //getOffScreenInfo();
   }
 
   Future<int> updateTexture() async {
@@ -36,7 +40,7 @@ class _MyAppState extends State<MyApp> {
       await stop();
     }
 
-    int ttId = await _fvpPlugin.createTexture();
+    int ttId = await _fvp.createTexture();
     setState(() {
       _textureId = ttId;
     });
@@ -45,25 +49,42 @@ class _MyAppState extends State<MyApp> {
     return ttId;
   }
 
+//离线媒体信息
+  void getOffScreenInfo() async {
+    final v = await _offFvp.getOffScreenMediaInfo(_urlController.text);
+  }
+
   void play(url) async {
     setState(() {
       tip = 'opening';
     });
     updateTexture();
-    await _fvpPlugin.setMedia(url);
-    _fvpPlugin.onStateChanged((String state) {
-      debugPrint("-------------------state change $state");
+    await _fvp.setHeaders({
+      'Referer':
+          'https://web.hkkp.cnscn.com/sltv_html/165/165kds/2439579.shtml',
     });
-    _fvpPlugin.onMediaStatusChanged((String status) {
-      debugPrint("============medias status change $status");
+    final headers = await _fvp.getProperty('headers');
+
+    await _fvp.setMedia(url);
+    _onEvents();
+    final info = await _fvp.getMediaInfo();
+    print(info.toString());
+  }
+
+  void _onEvents() {
+    _fvp.onStateChanged((String state) {
+      debugPrint("------------------- state change $state");
+    });
+    _fvp.onMediaStatusChanged((String status) {
+      debugPrint("============ medias status change $status");
       if (status == '-2147483648') {
         setState(() {
           tip = 'playing failed';
         });
       }
     });
-    _fvpPlugin.onEvent((Map<String, dynamic> data) {
-      debugPrint("******on media event ${data}");
+    _fvp.onEvent((Map<String, dynamic> data) {
+      debugPrint("----- ****** on media event ${data}");
       switch (data['category']) {
         case 'reader.buffering':
           final percent = data['error'].toInt();
@@ -82,22 +103,25 @@ class _MyAppState extends State<MyApp> {
           break;
       }
     });
+    _fvp.onRenderCallback((String msg) {
+      print('rendermsg $msg');
+    });
   }
 
   void playOrPause() {
-    _fvpPlugin.playOrPause();
+    _fvp.playOrPause();
     getMediaInfo();
   }
 
   Future<int> stop() async {
     _textureId = null;
-    return _fvpPlugin.stop();
+    return _fvp.stop();
   }
 
   void getMediaInfo() async {
-    final res = await _fvpPlugin.getMediaInfo();
+    final res = await _fvp.getMediaInfo();
     debugPrint('media info $res');
-    // _fvpPlugin.snapshot();
+    // _fvp.snapshot();
   }
 
   @override
@@ -138,8 +162,9 @@ class _MyAppState extends State<MyApp> {
               Row(
                 children: [
                   Container(
+                    color: Colors.white,
                     width: 500,
-                    padding: const EdgeInsets.only(left: 120),
+                    padding: const EdgeInsets.only(left: 10),
                     child: TextField(
                       decoration:
                           const InputDecoration(hintText: 'input video url'),

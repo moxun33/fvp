@@ -30,3 +30,5 @@ class FvpMediaStatus {
   static const invalid = 1 <<
       31; // failed to load media because of unsupport format or invalid media source
 }
+
+enum LogLevel { off, error, warning, info, debug, all }
