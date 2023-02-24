@@ -12,6 +12,7 @@
 #include <future>
 #include <optional>
 using namespace std;
+using namespace MDK_NS;
 
 #define MS_ENSURE(f, ...) MS_CHECK(f, return __VA_ARGS__;)
 #define MS_WARN(f) MS_CHECK(f)
@@ -72,6 +73,17 @@ namespace fvp
     }
 
     FvpPlugin::~FvpPlugin() {}
+
+    string strArg(const EncodableMap &map, const char *key)
+    {
+        auto v_it = map.find(EncodableValue(key));
+        string v = "";
+        if (v_it != map.end())
+        {
+            v = get<std::string>(v_it->second);
+        }
+        return v;
+    }
 
     void FvpPlugin::HandleMethodCall(
         const flutter::MethodCall<flutter::EncodableValue> &method_call,
@@ -213,24 +225,24 @@ namespace fvp
             // 停止播放
             player_.setNextMedia(nullptr, -1);
             player_.set(State::Stopped);
-            player_.waitFor(State::Stopped);
+            // player_.waitFor(State::Stopped);
             player_.setMedia(nullptr);
 
             result->Success(EncodableValue(1));
         }
         if (methodName == "setMedia")
         {
-           // std::cout << "to set new media" << std::endl;
-            auto url_it = argsList->find(flutter::EncodableValue("url"));
-            std::string url;
-            if (url_it != argsList->end())
-            {
-                url = std::get<std::string>(url_it->second);
-            }
+            // std::cout << "to set new media" << std::endl;
+            string url = strArg(*argsList, "url");
+            string headers = strArg(*argsList, "headers");
+            string ua = strArg(*argsList, "ua");
+            //    std::cout << "to set new off screen media" << url << std::endl;
+            player_.setProperty("headers", headers);
+            player_.setProperty("user-agent", !ua.empty() ? ua : "Windows Fvp ZTE");
 
             player_.setNextMedia(nullptr, -1);
             player_.set(State::Stopped);
-            // player_.waitFor(State::Stopped);
+            player_.waitFor(State::Stopped);
 
             player_.setMedia(nullptr);
             player_.setMedia(url.c_str());
@@ -246,31 +258,88 @@ namespace fvp
         // 设置离线媒体url
         if (methodName == "getOffScreenMediaInfo")
         {
+            Player player;
             promise<optional<MediaInfo>> p;
-            auto url_it = argsList->find(flutter::EncodableValue("url"));
-            std::string url;
-            if (url_it != argsList->end())
-            {
-                url = std::get<std::string>(url_it->second);
-            }
-        //    std::cout << "to set new off screen media" << url << std::endl;
 
-            player_.setMedia(url.c_str());
-            player_.prepare(0LL, [&](int64_t position, bool *)
-                            {
+            string url = strArg(*argsList, "url");
+            string headers = strArg(*argsList, "headers");
+            string ua = strArg(*argsList, "ua");
+            //    std::cout << "to set new off screen media" << url << std::endl;
+            player.setProperty("headers", headers);
+            player.setProperty("user-agent", !ua.empty() ? ua : "Windows Fvp ZTE");
+            player.setMedia(url.c_str());
+            player.prepare(0LL, [&](int64_t position, bool *)
+                           {
                     if (position < 0) {
                         p.set_value(nullopt);
                         return false;
                     }
-                    p.set_value(player_.mediaInfo());
+                    p.set_value(player.mediaInfo());
                     return false; });
             auto fut = p.get_future();
             auto info = fut.get();
             if (info)
             {
-                printf("duration: %" PRId64 "ms\n", info->duration);
+                cout << "format " << info->format << info->size << info->bit_rate << endl;
+                VideoStreamInfo video = info->video.front();
+                AudioStreamInfo audio = info->audio.front();
+                // printf("duration: %" PRId64 "ms\n", info->duration);
+                result->Success(EncodableValue(EncodableMap{
+                    {EncodableValue("start_time"), EncodableValue(info->start_time)},
+                    {EncodableValue("duration"), EncodableValue(info->duration)},
+                    {EncodableValue("bit_rate"), EncodableValue(info->bit_rate)},
+                    {EncodableValue("size"), EncodableValue(info->size)},
+                    {EncodableValue("format"), EncodableValue(info->format)},
+                    {EncodableValue("streams"), EncodableValue(info->streams)},
+                    {EncodableValue("metadata"), EncodableValue(EncodableMap{})},
+                    {EncodableValue("video"), EncodableValue(EncodableMap{
+                                                  {EncodableValue("codec"), EncodableValue(EncodableMap{
+                                                                                {EncodableValue("codec"), EncodableValue(video.codec.codec)},
+                                                                                /* {EncodableValue("codec_tag"), EncodableValue(video.codec.codec_tag > 0 ? video.codec.codec_tag : 0)}, */
+                                                                                {EncodableValue("profile"), EncodableValue(video.codec.profile)},
+                                                                                {EncodableValue("level"), EncodableValue(video.codec.level)},
+                                                                                {EncodableValue("bit_rate"), EncodableValue(video.codec.bit_rate)},
+                                                                                {EncodableValue("format"), EncodableValue(video.codec.format)},
+                                                                                {EncodableValue("frame_rate"), EncodableValue(video.codec.frame_rate)},
+                                                                                {EncodableValue("format_name"), EncodableValue(video.codec.format_name)},
+                                                                                {EncodableValue("width"), EncodableValue(video.codec.width)},
+                                                                                {EncodableValue("height"), EncodableValue(video.codec.height)},
+                                                                            })},
+                                                  {EncodableValue("start_time"), EncodableValue(video.start_time)},
+                                                  {EncodableValue("metadata"), EncodableValue(EncodableMap{})},
+                                                  {EncodableValue("rotation"), EncodableValue(video.rotation)},
+                                                  {EncodableValue("duration"), EncodableValue(video.duration)},
+                                                  {EncodableValue("frames"), EncodableValue(video.frames)},
+                                                  {EncodableValue("index"), EncodableValue(video.index)},
+                                              })},
+                    {EncodableValue("audio"), EncodableValue(EncodableMap{
+                                                  {EncodableValue("codec"), EncodableValue(EncodableMap{
+                                                                                {EncodableValue("codec"), EncodableValue(audio.codec.codec)},
+                                                                                /* {EncodableValue("codec_tag"), EncodableValue(audio.codec.codec_tag > 0 ? audio.codec.codec_tag : 0)}, */
+                                                                                {EncodableValue("profile"), EncodableValue(audio.codec.profile)},
+                                                                                {EncodableValue("level"), EncodableValue(audio.codec.level)},
+                                                                                {EncodableValue("bit_rate"), EncodableValue(audio.codec.bit_rate)},
+                                                                                {EncodableValue("frame_rate"), EncodableValue(audio.codec.frame_rate)},
+                                                                                {EncodableValue("channels"), EncodableValue(audio.codec.channels)},
+                                                                                {EncodableValue("block_align"), EncodableValue(audio.codec.block_align)},
+                                                                                {EncodableValue("frame_size"), EncodableValue(audio.codec.frame_size)},
+                                                                                {EncodableValue("raw_sample_size"), EncodableValue(audio.codec.raw_sample_size)},
+                                                                            })},
+                                                  {EncodableValue("start_time"), EncodableValue(audio.start_time)},
+                                                  {EncodableValue("metadata"), EncodableValue(EncodableMap{})},
+                                                  {EncodableValue("duration"), EncodableValue(audio.duration)},
+                                                  {EncodableValue("frames"), EncodableValue(audio.frames)},
+                                                  {EncodableValue("index"), EncodableValue(audio.index)},
+                                              })},
+                    /* {EncodableValue("bit_rate"), EncodableValue(EncodableList{
+                                                   EncodableValue(1),
+                                                   EncodableValue(2.0),
+                                                   EncodableValue(4),
+                })*/
+                }));
+
+                result->Error("get metadata failed");
             }
-            result->Success(EncodableValue(1));
         }
         if (methodName == "getMediaInfo")
         {

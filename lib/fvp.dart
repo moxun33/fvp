@@ -17,12 +17,14 @@ class Fvp {
     return FvpPlatform.instance.createTexture();
   }
 
-  Future<int> setMedia(String url) {
-    return FvpPlatform.instance.setMedia(url.trim());
+  Future<int> setMedia(String url, {String headers = '', String ua = ''}) {
+    return FvpPlatform.instance.setMedia(url.trim(), headers: headers, ua: ua);
   }
 
-  Future<int> getOffScreenMediaInfo(String url) {
-    return FvpPlatform.instance.getOffScreenMediaInfo(url.trim());
+  Future<Map<String, dynamic>?> getOffScreenMediaInfo(String url,
+      {String headers = '', String ua = ''}) {
+    return FvpPlatform.instance
+        .getOffScreenMediaInfo(url.trim(), ua: ua, headers: headers);
   }
 
   Future<int> playOrPause() {

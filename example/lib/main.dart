@@ -58,14 +58,11 @@ class _MyAppState extends State<MyApp> {
     setState(() {
       tip = 'opening';
     });
-    updateTexture();
-    await _fvp.setHeaders({
-      'Referer':
-          'https://web.hkkp.cnscn.com/sltv_html/165/165kds/2439579.shtml',
-    });
-    final headers = await _fvp.getProperty('headers');
+    // final vinfo = await _fvp.getOffScreenMediaInfo(url);
 
-    await _fvp.setMedia(url);
+    updateTexture();
+
+    await _fvp.setMedia(url, headers: 'referer:https://www.hkkp.cnscn.com');
     _onEvents();
     final info = await _fvp.getMediaInfo();
     print(info.toString());
@@ -81,6 +78,7 @@ class _MyAppState extends State<MyApp> {
         setState(() {
           tip = 'playing failed';
         });
+        stop();
       }
     });
     _fvp.onEvent((Map<String, dynamic> data) {

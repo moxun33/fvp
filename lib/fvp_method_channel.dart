@@ -30,22 +30,29 @@ class MethodChannelFvp extends FvpPlatform {
   }
 
   @override
-  Future<int> setMedia(String? url) async {
+  Future<int> setMedia(String? url,
+      {String headers = '', String ua = ''}) async {
     if (!(url != null && url.isNotEmpty)) {
       return 0;
       // throw ArgumentError('url 不能为空');
     }
-    return (await methodChannel.invokeMethod('setMedia', {'url': url})) as int;
+    return (await methodChannel.invokeMethod(
+        'setMedia', {'url': url, 'headers': headers, 'ua': ua})) as int;
   }
 
   @override
-  Future<int> getOffScreenMediaInfo(String? url) async {
+  Future<Map<String, dynamic>?> getOffScreenMediaInfo(String? url,
+      {String headers = '', String ua = ''}) async {
     if (!(url != null && url.isNotEmpty)) {
-      return 0;
+      return null;
       // throw ArgumentError('url 不能为空');
     }
-    return (await methodChannel
-        .invokeMethod('getOffScreenMediaInfo', {'url': url})) as int;
+    try {
+      return Map<String, dynamic>.from(await methodChannel.invokeMethod(
+          'getOffScreenMediaInfo', {'url': url, 'headers': headers, 'ua': ua}));
+    } catch (e) {
+      return null;
+    }
   }
 
   @override
@@ -140,7 +147,7 @@ class MethodChannelFvp extends FvpPlatform {
   Future<int> setHeaders(Map<String, String>? headers) async {
     String head = "";
     headers?.forEach((key, value) {
-      head = '$head$key: $value\r\n';
+      head = '$head$key: $value\r\n\t';
     });
     if (head.isEmpty) return 0;
     return (await methodChannel.invokeMethod('setHeaders', {'headers': head})
