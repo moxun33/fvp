@@ -27,8 +27,8 @@ using namespace MDK_NS;
         HRESULT __ms_hr__ = (f);                                                                                                                                                                      \
         if (FAILED(__ms_hr__))                                                                                                                                                                        \
         {                                                                                                                                                                                             \
-            std::clog << #f "  ERROR@" << __LINE__ << __FUNCTION__ << ": (" << std::hex << __ms_hr__ << std::dec << ") " << std::error_code(__ms_hr__, std::system_category()).message() << std::endl \
-                      << std::flush;                                                                                                                                                                  \
+            clog << #f "  ERROR@" << __LINE__ << __FUNCTION__ << ": (" << hex << __ms_hr__ << dec << ") " << error_code(__ms_hr__, system_category()).message() << endl \
+                      << flush;                                                                                                                                                                  \
             __VA_ARGS__                                                                                                                                                                               \
         }                                                                                                                                                                                             \
     } while (false)
@@ -39,8 +39,8 @@ namespace fvp
     using flutter::EncodableList;
     using flutter::EncodableMap;
     using flutter::EncodableValue;
-    std::unique_ptr<flutter::MethodChannel<EncodableValue>,
-                    std::default_delete<flutter::MethodChannel<EncodableValue>>>
+    unique_ptr<flutter::MethodChannel<EncodableValue>,
+                    default_delete<flutter::MethodChannel<EncodableValue>>>
         channel = nullptr;
 
     // static
@@ -48,10 +48,10 @@ namespace fvp
         flutter::PluginRegistrarWindows *registrar)
     {
         channel =
-            std::make_unique<flutter::MethodChannel<flutter::EncodableValue>>(
+            make_unique<flutter::MethodChannel<flutter::EncodableValue>>(
                 registrar->messenger(), "fvp",
                 &flutter::StandardMethodCodec::GetInstance());
-        auto plugin = std::make_unique<FvpPlugin>(registrar->texture_registrar()
+        auto plugin = make_unique<FvpPlugin>(registrar->texture_registrar()
 #ifdef VIEW_HAS_GetGraphicsAdapter
                                                       ,
                                                   registrar->GetView()->GetGraphicsAdapter()
@@ -61,10 +61,10 @@ namespace fvp
         channel->SetMethodCallHandler(
             [plugin_pointer = plugin.get()](const auto &call, auto result)
             {
-                plugin_pointer->HandleMethodCall(call, std::move(result));
+                plugin_pointer->HandleMethodCall(call, move(result));
             });
 
-        registrar->AddPlugin(std::move(plugin));
+        registrar->AddPlugin(move(plugin));
     }
 
     FvpPlugin::FvpPlugin(flutter::TextureRegistrar *tr, IDXGIAdapter *adapter)
@@ -80,19 +80,19 @@ namespace fvp
         string v = "";
         if (v_it != map.end())
         {
-            v = get<std::string>(v_it->second);
+            v = get<string>(v_it->second);
         }
         return v;
     }
 
     void FvpPlugin::HandleMethodCall(
         const flutter::MethodCall<flutter::EncodableValue> &method_call,
-        std::unique_ptr<flutter::MethodResult<flutter::EncodableValue>> result)
+        unique_ptr<flutter::MethodResult<flutter::EncodableValue>> result)
     {
 
-        const flutter::EncodableMap *argsList = std::get_if<flutter::EncodableMap>(method_call.arguments());
+        const flutter::EncodableMap *argsList = get_if<flutter::EncodableMap>(method_call.arguments());
         const string methodName = method_call.method_name();
-        // std::cout << "start fvp plugin!" << std::endl;
+        // cout << "start fvp plugin!" << endl;
         if (methodName == "CreateRT")
         {
             MS_WARN(D3D11CreateDevice(adapter_.Get(), adapter_ ? D3D_DRIVER_TYPE_UNKNOWN : D3D_DRIVER_TYPE_HARDWARE, nullptr, 0, nullptr, 0, D3D11_SDK_VERSION, &dev_, nullptr, &ctx_));
@@ -166,32 +166,32 @@ namespace fvp
 
             player_.onEvent([](const MediaEvent &e)
                             {
-                                std::cout << "----**** media event: " << e.category << ", error: " <<e.error << ", detail: " <<e.detail << std::endl;
+                                cout << "----**** media event: " << e.category << ", error: " <<e.error << ", detail: " <<e.detail << endl;
                                 EncodableMap data = EncodableMap();
                                 data[EncodableValue("category")] = EncodableValue(e.category);
                                 data[EncodableValue("error")] = EncodableValue((int)e.error);
                                 data[EncodableValue("detail")] = EncodableValue(e.detail);
                                 /* data[EncodableValue("decoder")] = EncodableValue(EncodableMap{EncodableValue("stream"),EncodableValue(e.decoder.stream)}); */
-                                channel->InvokeMethod("onEvent", std::make_unique<flutter::EncodableValue>(data));
+                                channel->InvokeMethod("onEvent", make_unique<flutter::EncodableValue>(data));
                                 return false; });
             player_.onMediaStatusChanged([](MediaStatus s)
                                          {
                                         //MediaStatus s = player.mediaStatus();
                                         printf("************Media status: %d, loading: %d, buffering: %d, prepared: %d, EOF: %d**********\n", s, s&MediaStatus::Loading, s&MediaStatus::Buffering, s&MediaStatus::Prepared, s&MediaStatus::End);
                                          
-                                        channel->InvokeMethod("onMediaStatusChanged", std::make_unique<flutter::EncodableValue>(EncodableValue(static_cast<int>(s))));
+                                        channel->InvokeMethod("onMediaStatusChanged", make_unique<flutter::EncodableValue>(EncodableValue(static_cast<int>(s))));
                                         return true; });
             player_.onStateChanged([&](State s)
                                    {
                                    // printf("state changed to %d ", s);
-                                 channel->InvokeMethod("onStateChanged",std::make_unique<flutter::EncodableValue>(EncodableValue(static_cast<int>(s)))); });
+                                 channel->InvokeMethod("onStateChanged",make_unique<flutter::EncodableValue>(EncodableValue(static_cast<int>(s)))); });
             player_.setRenderCallback([&](void *s)
                                       {
                                       
                                         
                                         player_.renderVideo();
                                         texture_registrar_->MarkTextureFrameAvailable(texture_id_);
-                                        channel->InvokeMethod("onRenderCallback",std::make_unique<flutter::EncodableValue>(EncodableValue(s))); });
+                                        channel->InvokeMethod("onRenderCallback",make_unique<flutter::EncodableValue>(EncodableValue(s))); });
 
             // player_.onFrame<VideoFrame>([&](VideoFrame& v, int){});
         }
@@ -202,7 +202,7 @@ namespace fvp
             int t = 0;
             if (t_it != argsList->end())
             {
-                t = std::get<int>(t_it->second);
+                t = get<int>(t_it->second);
             }
 
             SetGlobalOption("log", t);
@@ -214,8 +214,8 @@ namespace fvp
 
             setLogHandler([&](LogLevel l, const char *s)
                           {
-                              channel->InvokeMethod("onLog", std::make_unique<flutter::EncodableValue>(EncodableValue(s)));
-                              // std::cout << "*=[log msg]: " << s << std::endl;
+                              channel->InvokeMethod("onLog", make_unique<flutter::EncodableValue>(EncodableValue(s)));
+                              // cout << "*=[log msg]: " << s << endl;
                           });
 
             result->Success(EncodableValue(1));
@@ -232,11 +232,11 @@ namespace fvp
         }
         if (methodName == "setMedia")
         {
-            // std::cout << "to set new media" << std::endl;
+            // cout << "to set new media" << endl;
             string url = strArg(*argsList, "url");
             string headers = strArg(*argsList, "headers");
             string ua = strArg(*argsList, "ua");
-            //    std::cout << "to set new off screen media" << url << std::endl;
+            //    cout << "to set new off screen media" << url << endl;
             player_.setProperty("headers", headers);
             player_.setProperty("user-agent", !ua.empty() ? ua : "Windows Fvp ZTE");
 
@@ -249,7 +249,7 @@ namespace fvp
             player_.set(State::Playing);
             // player_.waitFor(State::Playing);
 
-            // player_.setActiveTracks(MediaType::Video,std::set(0));
+            // player_.setActiveTracks(MediaType::Video,set(0));
             // auto &c = player_.mediaInfo().video[0].codec;
             // player_.setVideoSurfaceSize(c.width, c.height);
             // player_.resizeSurface(c.width, c.height);
@@ -264,7 +264,7 @@ namespace fvp
             string url = strArg(*argsList, "url");
             string headers = strArg(*argsList, "headers");
             string ua = strArg(*argsList, "ua");
-            //    std::cout << "to set new off screen media" << url << std::endl;
+            //    cout << "to set new off screen media" << url << endl;
             player.setProperty("headers", headers);
             player.setProperty("user-agent", !ua.empty() ? ua : "Windows Fvp ZTE");
             player.setMedia(url.c_str());
@@ -428,7 +428,7 @@ namespace fvp
             float v = 1.0;
             if (v_it != argsList->end())
             {
-                v = (float)std::get<double>(v_it->second);
+                v = (float)get<double>(v_it->second);
             }
             player_.setVolume(v);
             result->Success(EncodableValue(1));
@@ -439,7 +439,7 @@ namespace fvp
             bool m = true;
             if (m_it != argsList->end())
             {
-                m = std::get<bool>(m_it->second);
+                m = get<bool>(m_it->second);
             }
             player_.setMute(m);
             result->Success(EncodableValue(1));
@@ -451,7 +451,7 @@ namespace fvp
             int t = 10000;
             if (t_it != argsList->end())
             {
-                t = std::get<int>(t_it->second);
+                t = get<int>(t_it->second);
             }
             player_.setTimeout(t);
             result->Success(EncodableValue(1));
@@ -473,10 +473,10 @@ namespace fvp
             // player_.snapshot(&req, nullptr);
             player_.snapshot(&req, [](Player::SnapshotRequest *r, double t)
                              {
-                                std::chrono::milliseconds ms = std::chrono::duration_cast< std::chrono::milliseconds >(
-                                    std::chrono::system_clock::now().time_since_epoch()
+                                chrono::milliseconds ms = chrono::duration_cast< chrono::milliseconds >(
+                                    chrono::system_clock::now().time_since_epoch()
                                 );
-                                 return "snapshots/" + std::to_string(ms.count()) + "-snapshot.jpg"; });
+                                 return "snapshots/" + to_string(ms.count()) + "-snapshot.jpg"; });
             result->Success(EncodableValue("done"));
         }
         if (methodName == "setUserAgent")
@@ -485,7 +485,7 @@ namespace fvp
             string v = "Windows FVP ZTE";
             if (v_it != argsList->end())
             {
-                v = std::get<string>(v_it->second);
+                v = get<string>(v_it->second);
             }
             player_.setProperty("user-agent", v);
             result->Success(EncodableValue(1));
@@ -496,7 +496,7 @@ namespace fvp
             string v = "";
             if (v_it != argsList->end())
             {
-                v = std::get<string>(v_it->second);
+                v = get<string>(v_it->second);
             }
             player_.setProperty("headers", v);
             result->Success(EncodableValue(1));
@@ -507,7 +507,7 @@ namespace fvp
             string v = "";
             if (v_it != argsList->end())
             {
-                v = std::get<string>(v_it->second);
+                v = get<string>(v_it->second);
             }
 
             result->Success(EncodableValue(player_.property(v)));
