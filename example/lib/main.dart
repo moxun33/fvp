@@ -31,7 +31,7 @@ class _MyAppState extends State<MyApp> {
   Future<void> initFvp() async {
     await updateTexture();
     //  play('https://hdltctwk.douyucdn2.cn/live/4549169rYnH7POVF.m3u8');
-    //play('http://livehkkp.chinamcache.com/live/CCTV-xw_4000.m3u8');
+    //play('http://livehkkp.chinamcache.com/live/CCTV-xw.m3u8');
     //getOffScreenInfo();
   }
 
@@ -62,7 +62,7 @@ class _MyAppState extends State<MyApp> {
 
     updateTexture();
 
-    await _fvp.setMedia(url, headers: 'referer:https://www.hkkp.cnscn.com');
+    await _fvp.setMedia(url, headers: 'Referer:http://www.hkkp.cnscn.com\n\r');
     _onEvents();
     final info = await _fvp.getMediaInfo();
     print(info.toString());
@@ -78,7 +78,7 @@ class _MyAppState extends State<MyApp> {
         setState(() {
           tip = 'playing failed';
         });
-        stop();
+        //stop();
       }
     });
     _fvp.onEvent((Map<String, dynamic> data) {
@@ -105,10 +105,10 @@ class _MyAppState extends State<MyApp> {
       //   print('rendermsg $msg');
     });
     _fvp.setLogHandler((msg) async {
-      print('log msg $msg');
+      // print('log msg $msg');
       final pos = await _fvp.position();
       final buff = await _fvp.buffered();
-      print('pos: $pos   buffered: $buff');
+      //print('pos: $pos   buffered: $buff');
     });
   }
 
