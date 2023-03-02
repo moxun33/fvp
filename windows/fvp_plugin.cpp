@@ -160,7 +160,7 @@ namespace fvp
             player_.setBackgroundColor(0, 0, 0, -1);
             player_.setProperty("user-agent", "Windows FVP ZTE");
             // SetGlobalOption("videoout.clear_on_stop", 1);
-            player_.setBufferRange(1000, 20000);
+           // player_.setBufferRange(1000, INT64_MAX);
             SetGlobalOption("log", "debug");
             SetGlobalOption("videoout.hdr", "1");
 
