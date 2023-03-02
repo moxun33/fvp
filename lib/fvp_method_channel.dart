@@ -199,28 +199,28 @@ class MethodChannelFvp extends FvpPlatform {
   Function logHandler = () {};
   @override
   void onStateChanged(void Function(String state)? cb) {
-    if (cb != null && cb.runtimeType == Function) {
+    if (cb != null) {
       stateChangeCb = cb;
     }
   }
 
   @override
   void onMediaStatusChanged(void Function(String status)? cb) {
-    if (cb != null && cb.runtimeType == Function) {
+    if (cb != null) {
       mediaStatusChangeCb = cb;
     }
   }
 
   @override
   void onEvent(void Function(Map<String, dynamic> data)? cb) {
-    if (cb != null && cb.runtimeType == Function) {
+    if (cb != null) {
       eventCb = cb;
     }
   }
 
   @override
   void onRenderCallback(void Function(String msg)? cb) {
-    if (cb != null && cb.runtimeType == Function) {
+    if (cb != null) {
       renderCb = cb;
     }
   }
@@ -228,7 +228,7 @@ class MethodChannelFvp extends FvpPlatform {
   @override
   Future<void> setLogHandler(void Function(String msg)? cb,
       {LogLevel? level}) async {
-    if (cb != null && cb.runtimeType == Function) {
+    if (cb != null) {
       logHandler = cb;
     }
     if (level != null) {
