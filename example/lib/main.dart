@@ -30,6 +30,7 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> initFvp() async {
     await updateTexture();
+
     //  play('https://hdltctwk.douyucdn2.cn/live/4549169rYnH7POVF.m3u8');
     //play('http://livehkkp.chinamcache.com/live/CCTV-xw.m3u8');
     //getOffScreenInfo();
@@ -102,12 +103,11 @@ class _MyAppState extends State<MyApp> {
       }
     });
     _fvp.onRenderCallback((String msg) {
-      //   print('rendermsg $msg');
+      print('rendermsg $msg');
     });
     _fvp.setLogHandler((msg) async {
       // print('log msg $msg');
-      final pos = await _fvp.position();
-      final buff = await _fvp.buffered();
+
       //print('pos: $pos   buffered: $buff');
     });
   }

@@ -51,7 +51,7 @@ abstract class FvpPlatform extends PlatformInterface {
     throw UnimplementedError('stop() has not been implemented.');
   }
 
-  Future<int> setLogLevel(LogLevel l) {
+  Future<int> setLogLevel(String? l) {
     throw UnimplementedError('setLogLevel() has not been implemented.');
   }
 
@@ -131,7 +131,7 @@ abstract class FvpPlatform extends PlatformInterface {
     throw UnimplementedError('onEvent() has not been implemented.');
   }
 
-  void setLogHandler(void Function(String data)? cb, {LogLevel? level}) {
+  void setLogHandler(void Function(String data)? cb, {String? level}) {
     throw UnimplementedError('setLogHandler() has not been implemented.');
   }
 }

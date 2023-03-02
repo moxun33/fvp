@@ -130,7 +130,7 @@ class MethodChannelFvp extends FvpPlatform {
   }
 
   @override
-  Future<int> setLogLevel(LogLevel l) async {
+  Future<int> setLogLevel(String? l) async {
     return (await methodChannel.invokeMethod('setLogLevel', {'level': l}))
         as int;
   }
@@ -233,13 +233,11 @@ class MethodChannelFvp extends FvpPlatform {
 
   @override
   Future<void> setLogHandler(void Function(String msg)? cb,
-      {LogLevel? level}) async {
+      {String? level}) async {
     if (cb != null) {
       logHandler = cb;
     }
-    if (level != null) {
-      setLogLevel(level);
-    }
-    (await methodChannel.invokeMethod('setLogHandler', {}));
+
+    (await methodChannel.invokeMethod('setLogHandler', {'level': level}));
   }
 }

@@ -97,7 +97,7 @@ class Fvp {
     return FvpPlatform.instance.stop();
   }
 
-  Future<int> setLogLevel(LogLevel l) {
+  Future<int> setLogLevel(String? l) {
     return FvpPlatform.instance.setLogLevel(l);
   }
 
@@ -133,7 +133,7 @@ class Fvp {
     return FvpPlatform.instance.onRenderCallback(cb);
   }
 
-  void setLogHandler(void Function(String msg)? cb, {LogLevel? level}) {
+  void setLogHandler(void Function(String msg)? cb, {String? level}) {
     return FvpPlatform.instance.setLogHandler(cb, level: level);
   }
 }

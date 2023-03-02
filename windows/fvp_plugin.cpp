@@ -16,21 +16,21 @@ using namespace MDK_NS;
 
 #define MS_ENSURE(f, ...) MS_CHECK(f, return __VA_ARGS__;)
 #define MS_WARN(f) MS_CHECK(f)
-#define MS_CHECK(f, ...)                                                                                                                                                                              \
-    do                                                                                                                                                                                                \
-    {                                                                                                                                                                                                 \
-        while (FAILED(GetLastError()))                                                                                                                                                                \
-        {                                                                                                                                                                                             \
-        }                                                                                                                                                                                             \
-        printf(#f "\n");                                                                                                                                                                              \
-        fflush(nullptr);                                                                                                                                                                              \
-        HRESULT __ms_hr__ = (f);                                                                                                                                                                      \
-        if (FAILED(__ms_hr__))                                                                                                                                                                        \
-        {                                                                                                                                                                                             \
+#define MS_CHECK(f, ...)                                                                                                                                                \
+    do                                                                                                                                                                  \
+    {                                                                                                                                                                   \
+        while (FAILED(GetLastError()))                                                                                                                                  \
+        {                                                                                                                                                               \
+        }                                                                                                                                                               \
+        printf(#f "\n");                                                                                                                                                \
+        fflush(nullptr);                                                                                                                                                \
+        HRESULT __ms_hr__ = (f);                                                                                                                                        \
+        if (FAILED(__ms_hr__))                                                                                                                                          \
+        {                                                                                                                                                               \
             clog << #f "  ERROR@" << __LINE__ << __FUNCTION__ << ": (" << hex << __ms_hr__ << dec << ") " << error_code(__ms_hr__, system_category()).message() << endl \
-                      << flush;                                                                                                                                                                  \
-            __VA_ARGS__                                                                                                                                                                               \
-        }                                                                                                                                                                                             \
+                 << flush;                                                                                                                                              \
+            __VA_ARGS__                                                                                                                                                 \
+        }                                                                                                                                                               \
     } while (false)
 
 namespace fvp
@@ -40,7 +40,7 @@ namespace fvp
     using flutter::EncodableMap;
     using flutter::EncodableValue;
     unique_ptr<flutter::MethodChannel<EncodableValue>,
-                    default_delete<flutter::MethodChannel<EncodableValue>>>
+               default_delete<flutter::MethodChannel<EncodableValue>>>
         channel = nullptr;
 
     // static
@@ -53,8 +53,8 @@ namespace fvp
                 &flutter::StandardMethodCodec::GetInstance());
         auto plugin = make_unique<FvpPlugin>(registrar->texture_registrar()
 #ifdef VIEW_HAS_GetGraphicsAdapter
-                                                      ,
-                                                  registrar->GetView()->GetGraphicsAdapter()
+                                                 ,
+                                             registrar->GetView()->GetGraphicsAdapter()
 #endif
         );
 
@@ -161,7 +161,7 @@ namespace fvp
             player_.setProperty("user-agent", "Windows FVP ZTE");
             // SetGlobalOption("videoout.clear_on_stop", 1);
             player_.setBufferRange(1000, 20000);
-
+            SetGlobalOption("log", "debug");
             SetGlobalOption("videoout.hdr", "1");
 
             player_.onEvent([](const MediaEvent &e)
@@ -188,35 +188,38 @@ namespace fvp
             player_.setRenderCallback([&](void *s)
                                       {
                                       
-                                        
+                                       
+
                                         player_.renderVideo();
                                         texture_registrar_->MarkTextureFrameAvailable(texture_id_);
-                                        channel->InvokeMethod("onRenderCallback",make_unique<flutter::EncodableValue>(EncodableValue(s))); });
+                                           int64_t pts = player_.position();
+                                          int64_t bfd = player_.buffered();
+                                          // cout<<"pts "<< pts/1000 <<" buffered "<<bfd/1000<<endl;
+                                          channel->InvokeMethod("onRenderCallback", make_unique<flutter::EncodableValue>(EncodableValue(EncodableMap{
+                                                                                        {EncodableValue("position"), EncodableValue(pts)},
+                                                                                        {EncodableValue("buffered"), EncodableValue(bfd)},
+                                                                                    }))); });
 
             // player_.onFrame<VideoFrame>([&](VideoFrame& v, int){});
         }
 
         if (methodName == "setLogLevel")
         {
-            auto t_it = argsList->find(EncodableValue("level"));
-            int t = 0;
-            if (t_it != argsList->end())
-            {
-                t = get<int>(t_it->second);
-            }
+            /*   string t = strArg(*argsList, "level")
 
-            SetGlobalOption("log", t);
+              SetGlobalOption("log", t);
+            SetGlobalOption("ffmpeg:log", t); */
 
             result->Success(EncodableValue(1));
         }
         if (methodName == "setLogHandler")
         {
-
+/*             string t = strArg(*argsLis, "level");
+            SetGlobalOption("log", t); */
             setLogHandler([&](LogLevel l, const char *s)
                           {
                               channel->InvokeMethod("onLog", make_unique<flutter::EncodableValue>(EncodableValue(s)));
-                              // cout << "*=[log msg]: " << s << endl;
-                          });
+                               /* cout << "*=[log msg]: " << s << endl;  */});
 
             result->Success(EncodableValue(1));
         }
@@ -503,8 +506,8 @@ namespace fvp
         }
         if (methodName == "setProperty")
         {
-             string k = strArg(*argsList, "key");
-             string v = strArg(*argsList, "value");
+            string k = strArg(*argsList, "key");
+            string v = strArg(*argsList, "value");
             player_.setProperty(k, v);
             result->Success(EncodableValue(1));
         }
