@@ -501,6 +501,13 @@ namespace fvp
             player_.setProperty("headers", v);
             result->Success(EncodableValue(1));
         }
+        if (methodName == "setProperty")
+        {
+             string k = strArg(*argsList, "key");
+             string v = strArg(*argsList, "value");
+            player_.setProperty(k, v);
+            result->Success(EncodableValue(1));
+        }
         if (methodName == "getProperty")
         {
             auto v_it = argsList->find(EncodableValue("key"));

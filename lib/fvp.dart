@@ -109,6 +109,10 @@ class Fvp {
     return FvpPlatform.instance.getProperty(key);
   }
 
+  Future<int> setProperty(String key, String value) {
+    return FvpPlatform.instance.setProperty(key, value);
+  }
+
   Future<int> setHeaders(Map<String, String>? headers) {
     return FvpPlatform.instance.setHeaders(headers);
   }

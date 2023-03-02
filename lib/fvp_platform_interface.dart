@@ -110,6 +110,10 @@ abstract class FvpPlatform extends PlatformInterface {
     throw UnimplementedError('getProperty() has not been implemented.');
   }
 
+  Future<int> setProperty(String key, String value) {
+    throw UnimplementedError('setProperty() has not been implemented.');
+  }
+
   void onStateChanged(void Function(String state)? cb) {
     throw UnimplementedError('onStateChanged() has not been implemented.');
   }

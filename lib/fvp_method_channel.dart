@@ -160,6 +160,12 @@ class MethodChannelFvp extends FvpPlatform {
         as String);
   }
 
+  @override
+  Future<int> setProperty(String key, String value) async {
+    return (await methodChannel
+        .invokeMethod('setProperty', {'key': key, 'value': value}) as int);
+  }
+
   Future<void> _methodCallHandler(MethodCall call) async {
     final args = call.arguments;
     /*   if (kDebugMode) {
