@@ -160,8 +160,8 @@ namespace fvp
             player_.setBackgroundColor(0, 0, 0, -1);
             player_.setProperty("user-agent", "Windows FVP ZTE");
             // SetGlobalOption("videoout.clear_on_stop", 1);
-           // player_.setBufferRange(1000, INT64_MAX);
-            SetGlobalOption("log", "debug");
+            // player_.setBufferRange(1000, INT64_MAX);
+              SetGlobalOption("log", "debug");
             SetGlobalOption("videoout.hdr", "1");
 
             player_.onEvent([](const MediaEvent &e)
@@ -185,7 +185,7 @@ namespace fvp
                                    {
                                    // printf("state changed to %d ", s);
                                  channel->InvokeMethod("onStateChanged",make_unique<flutter::EncodableValue>(EncodableValue(static_cast<int>(s)))); });
-            player_.setRenderCallback([&](void *s)
+            player_.setRenderCallback([&](void *v)
                                       {
                                       
                                        
@@ -214,12 +214,12 @@ namespace fvp
         }
         if (methodName == "setLogHandler")
         {
-/*             string t = strArg(*argsLis, "level");
-            SetGlobalOption("log", t); */
+            //string t = strArg(*argsList, "level");
+            // SetGlobalOption("log", t);
             setLogHandler([&](LogLevel l, const char *s)
                           {
                               channel->InvokeMethod("onLog", make_unique<flutter::EncodableValue>(EncodableValue(s)));
-                               /* cout << "*=[log msg]: " << s << endl;  */});
+                               /* cout << "*=[log msg]: " << s << endl;  */ });
 
             result->Success(EncodableValue(1));
         }
@@ -235,11 +235,11 @@ namespace fvp
         }
         if (methodName == "setMedia")
         {
-            // cout << "to set new media" << endl;
             string url = strArg(*argsList, "url");
             string headers = strArg(*argsList, "headers");
             string ua = strArg(*argsList, "ua");
-            //    cout << "to set new off screen media" << url << endl;
+
+            cout << "to set new media " << url << endl;
             player_.setProperty("headers", headers);
             player_.setProperty("user-agent", !ua.empty() ? ua : "Windows Fvp ZTE");
 

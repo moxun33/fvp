@@ -21,7 +21,7 @@ class _MyAppState extends State<MyApp> {
   int? _textureId;
   String tip = '';
   final TextEditingController _urlController = TextEditingController(
-      text: 'https://hdltctwk.douyucdn2.cn/live/4549169rYnH7POVF.m3u8');
+      text: 'https://hdltctwk.douyucdn2.cn/live/1226741rnlC714B3.m3u8');
   @override
   void initState() {
     super.initState();
@@ -38,7 +38,7 @@ class _MyAppState extends State<MyApp> {
 
   Future<int> updateTexture() async {
     if (_textureId != null) {
-      await stop();
+      // await stop();
     }
 
     int ttId = await _fvp.createTexture();
@@ -63,7 +63,7 @@ class _MyAppState extends State<MyApp> {
 
     updateTexture();
 
-    await _fvp.setMedia(url, headers: 'Referer:http://www.hkkp.cnscn.com\n\r');
+    await _fvp.setMedia(url);
     _onEvents();
     final info = await _fvp.getMediaInfo();
     print(info.toString());
@@ -103,10 +103,10 @@ class _MyAppState extends State<MyApp> {
       }
     });
     _fvp.onRenderCallback((String msg) {
-      print('rendermsg $msg');
+      debugPrint('rendermsg $msg');
     });
     _fvp.setLogHandler((msg) async {
-      // print('log msg $msg');
+      debugPrint('【log msg】 $msg');
 
       //print('pos: $pos   buffered: $buff');
     });

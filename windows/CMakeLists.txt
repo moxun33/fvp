@@ -66,6 +66,7 @@ if(VIEW_HAS_GetGraphicsAdapter)
 endif()
 
 set(MDK_SDK_URL "https://github.com/wang-bin/mdk-sdk/releases/download/v0.19.0/mdk-sdk-windows-desktop-vs2022.7z")
+#set(MDK_SDK_URL "https://sourceforge.net/projects/mdk-sdk/files/nightly/mdk-sdk-windows-desktop-vs2022.7z")
 set(MDK_SDK_SAVE ${CMAKE_CURRENT_SOURCE_DIR}/mdk-sdk-windows-desktop-vs2022.7z)
 if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/mdk-sdk/lib/cmake/FindMDK.cmake)
   if(NOT EXISTS ${MDK_SDK_SAVE})
