@@ -61,7 +61,7 @@ class _MyAppState extends State<MyApp> {
     });
     // final vinfo = await _fvp.getOffScreenMediaInfo(url);
 
-    updateTexture();
+    //  updateTexture();
 
     await _fvp.setMedia(url);
     _onEvents();
@@ -71,10 +71,10 @@ class _MyAppState extends State<MyApp> {
 
   void _onEvents() {
     _fvp.onStateChanged((String state) {
-      debugPrint("------------------- state change $state");
+      debugPrint("----state change $state");
     });
     _fvp.onMediaStatusChanged((String status) {
-      debugPrint("============ medias status change $status");
+      debugPrint("==== medias status change $status");
       if (status == '-2147483648') {
         setState(() {
           tip = 'playing failed';
@@ -83,7 +83,7 @@ class _MyAppState extends State<MyApp> {
       }
     });
     _fvp.onEvent((Map<String, dynamic> data) {
-      debugPrint("----- ****** on media event ${data}");
+      debugPrint("****** on media event ${data}");
       switch (data['category']) {
         case 'reader.buffering':
           final percent = data['error'].toInt();
@@ -103,7 +103,7 @@ class _MyAppState extends State<MyApp> {
       }
     });
     _fvp.onRenderCallback((String msg) {
-      debugPrint('rendermsg $msg');
+      debugPrint('【render msg】 $msg');
     });
     _fvp.setLogHandler((msg) async {
       debugPrint('【log msg】 $msg');
