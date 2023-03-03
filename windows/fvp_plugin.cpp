@@ -161,7 +161,7 @@ namespace fvp
             player_.setProperty("user-agent", "Windows FVP ZTE");
             // SetGlobalOption("videoout.clear_on_stop", 1);
             // player_.setBufferRange(1000, INT64_MAX);
-              SetGlobalOption("log", "debug");
+            SetGlobalOption("log", "debug");
             SetGlobalOption("videoout.hdr", "1");
 
             player_.onEvent([](const MediaEvent &e)
@@ -201,6 +201,8 @@ namespace fvp
                                                                                     }))); });
 
             // player_.onFrame<VideoFrame>([&](VideoFrame& v, int){});
+            
+            
         }
 
         if (methodName == "setLogLevel")
@@ -214,8 +216,8 @@ namespace fvp
         }
         if (methodName == "setLogHandler")
         {
-            //string t = strArg(*argsList, "level");
-            // SetGlobalOption("log", t);
+            // string t = strArg(*argsList, "level");
+            //  SetGlobalOption("log", t);
             setLogHandler([&](LogLevel l, const char *s)
                           {
                               channel->InvokeMethod("onLog", make_unique<flutter::EncodableValue>(EncodableValue(s)));

@@ -79,5 +79,6 @@
         "resumable": "cpp",
         "future": "cpp",
         "deque": "cpp"
-    }
+    },
+    "cmake.sourceDirectory": "${workspaceFolder}/example/windows"
 }
