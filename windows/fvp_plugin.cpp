@@ -231,7 +231,7 @@ namespace fvp
             // 停止播放
             player_.setNextMedia(nullptr, -1);
             player_.set(State::Stopped);
-            player_.waitFor(State::Stopped);
+            // player_.waitFor(State::Stopped);
             player_.setMedia(nullptr);
 
             result->Success(EncodableValue(1));
