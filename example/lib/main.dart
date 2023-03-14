@@ -21,7 +21,7 @@ class _MyAppState extends State<MyApp> {
   int? _textureId;
   String tip = '';
   final TextEditingController _urlController = TextEditingController(
-      text: 'https://hdltctwk.douyucdn2.cn/live/1226741rnlC714B3.m3u8');
+      text: 'http://hdltc1.douyucdn.cn/live/747764rSurv4YkpQ.m3u8?uuid=');
   @override
   void initState() {
     super.initState();
@@ -38,7 +38,7 @@ class _MyAppState extends State<MyApp> {
 
   Future<int> updateTexture() async {
     if (_textureId != null) {
-      // await stop();
+      await stop();
     }
 
     int ttId = await _fvp.createTexture();
@@ -61,7 +61,7 @@ class _MyAppState extends State<MyApp> {
     });
     // final vinfo = await _fvp.getOffScreenMediaInfo(url);
 
-    //  updateTexture();
+    updateTexture();
 
     await _fvp.setMedia(url);
     _onEvents();

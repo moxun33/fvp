@@ -162,7 +162,8 @@ namespace fvp
             // SetGlobalOption("videoout.clear_on_stop", 1);
             // player_.setBufferRange(1000, INT64_MAX);
             SetGlobalOption("log", "debug");
-            SetGlobalOption("videoout.hdr", "1");
+            SetGlobalOption("videoout.hdr", 1);
+            SetGlobalOption("videoout.clear_on_stop", 1);
 
             player_.onEvent([](const MediaEvent &e)
                             {
@@ -202,7 +203,7 @@ namespace fvp
 
             // player_.onFrame<VideoFrame>([&](VideoFrame& v, int){});
             
-            
+
         }
 
         if (methodName == "setLogLevel")
@@ -230,7 +231,7 @@ namespace fvp
             // 停止播放
             player_.setNextMedia(nullptr, -1);
             player_.set(State::Stopped);
-            // player_.waitFor(State::Stopped);
+            player_.waitFor(State::Stopped);
             player_.setMedia(nullptr);
 
             result->Success(EncodableValue(1));
