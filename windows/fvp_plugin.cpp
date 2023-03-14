@@ -85,6 +85,27 @@ namespace fvp
         return v;
     }
 
+    int intArg(const EncodableMap &map, const char *key)
+    {
+        auto v_it = map.find(EncodableValue(key));
+        int v = 0;
+        if (v_it != map.end())
+        {
+            v = get<int>(v_it->second);
+        }
+        return v;
+    }
+    float floatArg(const EncodableMap &map, const char *key)
+    {
+        auto v_it = map.find(EncodableValue(key));
+        float v = 0.0;
+        if (v_it != map.end())
+        {
+            v = (float)get<double>(v_it->second);
+        }
+        return v;
+    }
+
     void FvpPlugin::HandleMethodCall(
         const flutter::MethodCall<flutter::EncodableValue> &method_call,
         unique_ptr<flutter::MethodResult<flutter::EncodableValue>> result)
@@ -539,6 +560,13 @@ namespace fvp
         {
             int64_t t = player_.buffered();
             result->Success(EncodableValue((int64_t)(t)));
+        }
+        if (methodName == "setVideoSurfaceSize")
+        {
+            int w = intArg(*argsList, "width");
+            int h = intArg(*argsList, "height");
+            player_.setVideoSurfaceSize(w,h);
+            result->Success(EncodableValue(1));
         }
         else
         {

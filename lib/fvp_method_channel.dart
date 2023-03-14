@@ -136,6 +136,12 @@ class MethodChannelFvp extends FvpPlatform {
   }
 
   @override
+  Future<int> setVideoSurfaceSize(int width, int height) async {
+    return (await methodChannel.invokeMethod(
+        'setVideoSurfaceSize', {'width': width, 'height': height})) as int;
+  }
+
+  @override
   Future<int> setUserAgent(String? ua) async {
     return (await methodChannel.invokeMethod('setUserAgent', {
       'ua': ua ??

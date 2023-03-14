@@ -61,7 +61,7 @@ class _MyAppState extends State<MyApp> {
     });
     // final vinfo = await _fvp.getOffScreenMediaInfo(url);
 
-    updateTexture();
+    await updateTexture();
 
     await _fvp.setMedia(url);
     _onEvents();
@@ -73,7 +73,7 @@ class _MyAppState extends State<MyApp> {
     _fvp.onStateChanged((String state) {
       debugPrint("----state change $state");
     });
-    _fvp.onMediaStatusChanged((String status) {
+    _fvp.onMediaStatusChanged((String status) async {
       debugPrint("==== medias status change $status");
       if (status == '-2147483648') {
         setState(() {
@@ -82,8 +82,9 @@ class _MyAppState extends State<MyApp> {
         //stop();
       }
     });
-    _fvp.onEvent((Map<String, dynamic> data) {
+    _fvp.onEvent((Map<String, dynamic> data) async {
       debugPrint("****** on media event ${data}");
+      final value = data['error'].toInt();
       switch (data['category']) {
         case 'reader.buffering':
           final percent = data['error'].toInt();
@@ -92,21 +93,28 @@ class _MyAppState extends State<MyApp> {
               tip = 'buffering $percent%';
             });
           } else {
+            /*  final res = await _fvp.getMediaInfo(),
+                videoCodec = res!["video"]["codec"] ?? {};
+            debugPrint(
+                'media info ${videoCodec["width"]} ${videoCodec["height"]}');
+            _fvp.setVideoSurfaceSize(
+                videoCodec["width"] as int, videoCodec["height"] as int); */
             setState(() {
               tip = '';
             });
           }
 
           break;
+
         default:
           break;
       }
     });
     _fvp.onRenderCallback((String msg) {
-      debugPrint('【render msg】 $msg');
+      // debugPrint('【render msg】 $msg');
     });
     _fvp.setLogHandler((msg) async {
-      debugPrint('【log msg】 $msg');
+      // debugPrint('【log msg】 $msg');
 
       //print('pos: $pos   buffered: $buff');
     });
@@ -117,8 +125,8 @@ class _MyAppState extends State<MyApp> {
     getMediaInfo();
   }
 
-  Future<int> stop() async {
-    _textureId = null;
+  Future<int> stop({bool? clear}) async {
+    if (clear == true) _textureId = null;
     return _fvp.stop();
   }
 

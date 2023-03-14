@@ -101,6 +101,10 @@ class Fvp {
     return FvpPlatform.instance.setLogLevel(l);
   }
 
+  Future<int> setVideoSurfaceSize(int width, int height) {
+    return FvpPlatform.instance.setVideoSurfaceSize(width, height);
+  }
+
   Future<int> setUserAgent(String? ua) {
     return FvpPlatform.instance.setUserAgent(ua);
   }

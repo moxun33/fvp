@@ -55,6 +55,10 @@ abstract class FvpPlatform extends PlatformInterface {
     throw UnimplementedError('setLogLevel() has not been implemented.');
   }
 
+  Future<int> setVideoSurfaceSize(int width, int height) {
+    throw UnimplementedError('setVideoSurfaceSize() has not been implemented.');
+  }
+
   Future<Map<String, dynamic>?> getMediaInfo() {
     throw UnimplementedError('getMediaInfo() has not been implemented.');
   }
