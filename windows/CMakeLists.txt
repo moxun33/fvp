@@ -65,8 +65,8 @@ if(VIEW_HAS_GetGraphicsAdapter)
   target_compile_definitions(${PLUGIN_NAME} PRIVATE VIEW_HAS_GetGraphicsAdapter=1)
 endif()
 
-set(MDK_SDK_URL "https://github.com/wang-bin/mdk-sdk/releases/download/v0.19.0/mdk-sdk-windows-desktop-vs2022.7z")
-#set(MDK_SDK_URL "https://sourceforge.net/projects/mdk-sdk/files/nightly/mdk-sdk-windows-desktop-vs2022.7z")
+#set(MDK_SDK_URL "https://github.com/wang-bin/mdk-sdk/releases/download/v0.19.0/mdk-sdk-windows-desktop-vs2022.7z")
+set(MDK_SDK_URL "https://sourceforge.net/projects/mdk-sdk/files/nightly/mdk-sdk-windows-desktop-vs2022.7z")
 set(MDK_SDK_SAVE ${CMAKE_CURRENT_SOURCE_DIR}/mdk-sdk-windows-desktop-vs2022.7z)
 if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/mdk-sdk/lib/cmake/FindMDK.cmake)
   if(NOT EXISTS ${MDK_SDK_SAVE})
@@ -88,7 +88,7 @@ endif()
 # external build triggered from this build file.
 set(fvp_bundled_libraries
     ${CMAKE_CURRENT_SOURCE_DIR}/mdk-sdk/bin/x64/mdk.dll
-    ${CMAKE_CURRENT_SOURCE_DIR}/mdk-sdk/bin/x64/ffmpeg-5.dll
+    ${CMAKE_CURRENT_SOURCE_DIR}/mdk-sdk/bin/x64/ffmpeg-6.dll
   PARENT_SCOPE
 )
 
