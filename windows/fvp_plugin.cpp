@@ -174,7 +174,7 @@ namespace fvp
             result->Success(flutter::EncodableValue(texture_id_));
 
             //    player_.setLoop(-1);
-            player_.setDecoders(MediaType::Video, {"MFT:d3d=11", "D3D11", "FFmpeg"});
+            player_.setDecoders(MediaType::Video, {"MFT:d3d=11", "D3D11",  "hap","DXVA", "CUDA", "FFmpeg", "dav1d"});
             D3D11RenderAPI ra{};
             ra.rtv = tex_.Get();
             player_.setRenderAPI(&ra);
@@ -182,20 +182,20 @@ namespace fvp
             player_.setBackgroundColor(0, 0, 0, -1);
             player_.setProperty("user-agent", "Windows FVP ZTE");
             // SetGlobalOption("videoout.clear_on_stop", 1);
-            // player_.setBufferRange(1000, INT64_MAX);
-            SetGlobalOption("log", "debug");
-            SetGlobalOption("videoout.hdr", 1);
+          // player_.setBufferRange(1000, INT64_MAX);
+           SetGlobalOption("log", "error");
+          //  SetGlobalOption("videoout.hdr", 1);
             SetGlobalOption("videoout.clear_on_stop", 1);
 
             player_.onEvent([](const MediaEvent &e)
                             {
-                                cout << "----**** media event: " << e.category << ", error: " <<e.error << ", detail: " <<e.detail << endl;
-                                EncodableMap data = EncodableMap();
+                                cout << "----c++**** media event: " << e.category << ", error: " <<e.error << ", detail: " <<e.detail << endl;
+                                 EncodableMap data = EncodableMap();
                                 data[EncodableValue("category")] = EncodableValue(e.category);
                                 data[EncodableValue("error")] = EncodableValue((int)e.error);
-                                data[EncodableValue("detail")] = EncodableValue(e.detail);
-                                /* data[EncodableValue("decoder")] = EncodableValue(EncodableMap{EncodableValue("stream"),EncodableValue(e.decoder.stream)}); */
-                                channel->InvokeMethod("onEvent", make_unique<flutter::EncodableValue>(data));
+                                data[EncodableValue("detail")] = EncodableValue(e.detail.empty()?"":e.detail);
+                               /* data[EncodableValue("decoder")] = EncodableValue(EncodableMap{EncodableValue("stream"),EncodableValue(e.decoder.stream)}); */
+                              channel->InvokeMethod("onEvent", make_unique<flutter::EncodableValue>(data));
                                 return false; });
             player_.onMediaStatusChanged([](MediaStatus s)
                                          {
@@ -206,7 +206,7 @@ namespace fvp
                                         return true; });
             player_.onStateChanged([&](State s)
                                    {
-                                   // printf("state changed to %d ", s);
+                                  // printf("state changed to %d ", s);
                                  channel->InvokeMethod("onStateChanged",make_unique<flutter::EncodableValue>(EncodableValue(static_cast<int>(s)))); });
             player_.setRenderCallback([&](void *v)
                                       {

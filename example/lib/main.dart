@@ -21,16 +21,17 @@ class _MyAppState extends State<MyApp> {
   int? _textureId;
   String tip = '';
   final TextEditingController _urlController = TextEditingController(
-      text: 'http://hdltc1.douyucdn.cn/live/747764rSurv4YkpQ.m3u8?uuid=');
+      text: 'http://lay6.3322.org:4022/udp/239.3.1.249:8001');
   @override
   void initState() {
     super.initState();
     initFvp();
   }
 
+//http://lay6.3322.org:4022/udp/239.3.1.249:8001
   Future<void> initFvp() async {
     await updateTexture();
-
+//http://hw-tct.douyucdn.cn/live/3637726rQLDdfto7.flv?uuid=
     //  play('https://hdltctwk.douyucdn2.cn/live/4549169rYnH7POVF.m3u8');
     //play('http://livehkkp.chinamcache.com/live/CCTV-xw.m3u8');
     //getOffScreenInfo();
@@ -144,7 +145,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('build textureId: $_textureId');
+    //debugPrint('build textureId: $_textureId');
     return MaterialApp(
         home: Scaffold(
             appBar: AppBar(
