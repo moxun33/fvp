@@ -31,8 +31,7 @@ class _MyAppState extends State<MyApp> {
 //http://lay6.3322.org:4022/udp/239.3.1.249:8001
   Future<void> initFvp() async {
     await updateTexture();
-//http://hw-tct.douyucdn.cn/live/3637726rQLDdfto7.flv?uuid=
-    //  play('https://hdltctwk.douyucdn2.cn/live/4549169rYnH7POVF.m3u8');
+//
     //play('http://livehkkp.chinamcache.com/live/CCTV-xw.m3u8');
     //getOffScreenInfo();
   }
@@ -112,10 +111,10 @@ class _MyAppState extends State<MyApp> {
       }
     });
     _fvp.onRenderCallback((String msg) {
-      // debugPrint('【render msg】 $msg');
+      debugPrint('【render】 $msg');
     });
     _fvp.setLogHandler((msg) async {
-      // debugPrint('【log msg】 $msg');
+      debugPrint('【log】 $msg');
 
       //print('pos: $pos   buffered: $buff');
     });

@@ -118,6 +118,10 @@ abstract class FvpPlatform extends PlatformInterface {
     throw UnimplementedError('setProperty() has not been implemented.');
   }
 
+  Future<int> setDecoder(String decoder, int type) {
+    throw UnimplementedError('setDecoder() has not been implemented.');
+  }
+
   void onStateChanged(void Function(String state)? cb) {
     throw UnimplementedError('onStateChanged() has not been implemented.');
   }
@@ -135,7 +139,8 @@ abstract class FvpPlatform extends PlatformInterface {
     throw UnimplementedError('onEvent() has not been implemented.');
   }
 
-  void setLogHandler(void Function(String data)? cb, {String? level}) {
+  void setLogHandler(void Function(String data)? cb,
+      {String? level, String? ffmpegLevel}) {
     throw UnimplementedError('setLogHandler() has not been implemented.');
   }
 }

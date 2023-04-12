@@ -33,7 +33,6 @@ using namespace MDK_NS;
         }                                                                                                                                                               \
     } while (false)
 
-
 namespace fvp
 {
 
@@ -174,18 +173,17 @@ namespace fvp
             result->Success(flutter::EncodableValue(texture_id_));
 
             //    player_.setLoop(-1);
-            player_.setDecoders(MediaType::Video, {"MFT:d3d=11", "D3D11",  "hap","DXVA", "CUDA", "FFmpeg", "dav1d"});
+            player_.setDecoders(MediaType::Video, {"MFT:d3d=11:ignore_profile=1", "D3D11", "hap", "DXVA", "CUDA", "FFmpeg", "dav1d"});
             D3D11RenderAPI ra{};
             ra.rtv = tex_.Get();
             player_.setRenderAPI(&ra);
             player_.setVideoSurfaceSize(desc.Width, desc.Height);
             player_.setBackgroundColor(0, 0, 0, -1);
             player_.setProperty("user-agent", "Windows FVP ZTE");
-            // SetGlobalOption("videoout.clear_on_stop", 1);
-          // player_.setBufferRange(1000, INT64_MAX);
-           SetGlobalOption("log", "error");
-          //  SetGlobalOption("videoout.hdr", 1);
-            SetGlobalOption("videoout.clear_on_stop", 1);
+            // player_.setBufferRange(1000, INT64_MAX);
+
+            SetGlobalOption("videoout.hdr", 1);
+            SetGlobalOption("profiler.gpu", 1);
 
             player_.onEvent([](const MediaEvent &e)
                             {
@@ -224,8 +222,37 @@ namespace fvp
                                                                                     }))); });
 
             // player_.onFrame<VideoFrame>([&](VideoFrame& v, int){});
-            
+        }
 
+        if (methodName == "setLogLevel")
+        {
+            /*   string t = strArg(*argsList, "level")
+
+              SetGlobalOption("log", t);
+            SetGlobalOption("ffmpeg:log", t); */
+
+            result->Success(EncodableValue(1));
+        }
+
+        if (methodName == "setDecoder")
+        {
+            string dec = strArg(*argsList, "docoder");
+            int t = intArg(*argsList, "type");
+            MediaType type = MediaType::Video;
+            switch (t)
+            {
+            default:
+                break;
+            case 1:
+                type = MediaType::Audio;
+                break;
+            case 3:
+                type = MediaType::Subtitle;
+                break;
+            }
+            player_.setDecoders(type, {dec});
+
+            result->Success(EncodableValue(1));
         }
 
         if (methodName == "setLogLevel")
@@ -239,6 +266,11 @@ namespace fvp
         }
         if (methodName == "setLogHandler")
         {
+            string log = strArg(*argsList, "level");
+
+            string ffmpeg = strArg(*argsList, "ffmpegLevel");
+            SetGlobalOption("log", !log.empty() ? log.c_str() : "All");
+            SetGlobalOption("ffmpeg.loglevel", !ffmpeg.empty() ? ffmpeg.c_str() : "debug");
             // string t = strArg(*argsList, "level");
             //  SetGlobalOption("log", t);
             setLogHandler([&](LogLevel l, const char *s)
@@ -566,7 +598,7 @@ namespace fvp
         {
             int w = intArg(*argsList, "width");
             int h = intArg(*argsList, "height");
-            player_.setVideoSurfaceSize(w,h);
+            player_.setVideoSurfaceSize(w, h);
             result->Success(EncodableValue(1));
         }
         else

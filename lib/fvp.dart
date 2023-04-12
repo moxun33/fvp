@@ -117,6 +117,10 @@ class Fvp {
     return FvpPlatform.instance.setProperty(key, value);
   }
 
+  Future<int> setDecoder(String decoder, int type) {
+    return FvpPlatform.instance.setDecoder(decoder, type);
+  }
+
   Future<int> setHeaders(Map<String, String>? headers) {
     return FvpPlatform.instance.setHeaders(headers);
   }
@@ -137,7 +141,13 @@ class Fvp {
     return FvpPlatform.instance.onRenderCallback(cb);
   }
 
-  void setLogHandler(void Function(String msg)? cb, {String? level}) {
-    return FvpPlatform.instance.setLogHandler(cb, level: level);
+/* 
+-"ffmpeglevel" or "ffmpeg.log": ffmpeg log level names, "trace", "debug", "verbose", "info", "warning", "error", "fatal", "panic", "quiet"
+ - "level" : can be "Off", "Error", "Warning", "Info", "Debug", "All". same as SetGlobalOption
+ */
+  void setLogHandler(void Function(String msg)? cb,
+      {String? level, String? ffmpegLevel}) {
+    return FvpPlatform.instance
+        .setLogHandler(cb, level: level, ffmpegLevel: ffmpegLevel);
   }
 }

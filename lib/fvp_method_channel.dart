@@ -172,6 +172,12 @@ class MethodChannelFvp extends FvpPlatform {
         .invokeMethod('setProperty', {'key': key, 'value': value}) as int);
   }
 
+  @override
+  Future<int> setDecoder(String decoder, int type) async {
+    return (await methodChannel
+        .invokeMethod('setDecoder', {'decoder': decoder, 'type': type}) as int);
+  }
+
   Future<void> _methodCallHandler(MethodCall call) async {
     final args = call.arguments;
     /*   if (kDebugMode) {
@@ -239,11 +245,12 @@ class MethodChannelFvp extends FvpPlatform {
 
   @override
   Future<void> setLogHandler(void Function(String msg)? cb,
-      {String? level}) async {
+      {String? level, String? ffmpegLevel}) async {
     if (cb != null) {
       logHandler = cb;
     }
 
-    (await methodChannel.invokeMethod('setLogHandler', {'level': level}));
+    (await methodChannel.invokeMethod(
+        'setLogHandler', {'level': level, 'ffmpegLevel': ffmpegLevel}));
   }
 }
