@@ -250,7 +250,7 @@ class MethodChannelFvp extends FvpPlatform {
       logHandler = cb;
     }
 
-    (await methodChannel.invokeMethod(
-        'setLogHandler', {'level': level, 'ffmpegLevel': ffmpegLevel}));
+    (await methodChannel.invokeMethod('setLogHandler',
+        {'level': level ?? "All", 'ffmpegLevel': ffmpegLevel ?? "debug"}));
   }
 }
