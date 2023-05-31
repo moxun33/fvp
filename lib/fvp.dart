@@ -17,7 +17,11 @@ class Fvp {
     return FvpPlatform.instance.createTexture();
   }
 
-  Future<int> setMedia(String url, {String headers = '', String ua = ''}) {
+  Future<int> setMedia(
+    String url, {
+    String headers = '',
+    String ua = '',
+  }) {
     return FvpPlatform.instance.setMedia(url.trim(), headers: headers, ua: ua);
   }
 
@@ -117,8 +121,14 @@ class Fvp {
     return FvpPlatform.instance.setProperty(key, value);
   }
 
-  Future<int> setDecoder(String decoder, int type) {
-    return FvpPlatform.instance.setDecoder(decoder, type);
+/* 
+  'Unknown': -1,
+  'Video': 0,
+  'AudioComparable': 1,
+  'Subtitle': 3,
+ */
+  Future<int> setDecoder(String decoder, {int type = 0}) {
+    return FvpPlatform.instance.setDecoder(decoder, type: type);
   }
 
   Future<int> setHeaders(Map<String, String>? headers) {

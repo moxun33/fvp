@@ -20,8 +20,17 @@ class _MyAppState extends State<MyApp> {
   final _offFvp = Fvp();
   int? _textureId;
   String tip = '';
+
+  final dyUrl =
+      'http://openhls-tct.douyucdn2.cn/live/9249162rkngHvJIB.m3u8?uuid=';
+  final gd4k =
+      'http://120.87.4.5:80/PLTV/88888973/224/3221226174/10000100000000060000000001154677_0.smil/01.m3u8?fmt=ts2hls,83,01.m3u8,0,28893,0,0&accountinfo=Wti4h1vlszvIgmJ2Rn+JT30YqhIlb959YafU65xwPQuFI6KpBBcFipVQNWSpm9U4cljBwkAKGt2Lq1W8IgjWjgzcX+uhk0/ut3dCvLMCowks7JFSNmqxY+Vs2cx118+R:20181110091937,END&GuardEncType=2';
+  final cctv5 =
+      'http://112.89.121.23:80/PLTV/88888973/224/3221225705/10000100000000060000000000334542_0.smil/01.m3u8?fmt=ts2hls,504,01.m3u8,0,7819,0,0&accountinfo=Wti4h1vlszvIgmJ2Rn+JT30YqhIlb959YafU65xwPQuFI6KpBBcFipVQNWSpm9U4cljBwkAKGt2Lq1W8IgjWjgzcX+uhk0/ut3dCvLMCown2FDVNG+ZNzdxPe0phXLWm:20181110091937,END&GuardEncType=2';
+  final bj4k = 'http://qnap.yjnhome.com:4000/rtp/239.3.1.249:8001';
   final TextEditingController _urlController = TextEditingController(
-      text: 'http://lay6.3322.org:4022/udp/239.3.1.249:8001');
+      text:
+          'http://openhls-tct.douyucdn2.cn/live/9249162rkngHvJIB.m3u8?uuid=' /*   'http://112.89.121.23:80/PLTV/88888973/224/3221225705/10000100000000060000000000334542_0.smil/01.m3u8?fmt=ts2hls,504,01.m3u8,0,7819,0,0&accountinfo=Wti4h1vlszvIgmJ2Rn+JT30YqhIlb959YafU65xwPQuFI6KpBBcFipVQNWSpm9U4cljBwkAKGt2Lq1W8IgjWjgzcX+uhk0/ut3dCvLMCown2FDVNG+ZNzdxPe0phXLWm:20181110091937,END&GuardEncType=2' */);
   @override
   void initState() {
     super.initState();
@@ -72,6 +81,7 @@ class _MyAppState extends State<MyApp> {
   void _onEvents() {
     _fvp.onStateChanged((String state) {
       debugPrint("----state change $state");
+      _fvp.setProperty("video.avfilter", "yadif");
     });
     _fvp.onMediaStatusChanged((String status) async {
       debugPrint("==== medias status change $status");
@@ -82,6 +92,7 @@ class _MyAppState extends State<MyApp> {
         //stop();
       }
     });
+
     _fvp.onEvent((Map<String, dynamic> data) async {
       debugPrint("****** on media event ${data}");
       final value = data['error'].toInt();
@@ -93,12 +104,13 @@ class _MyAppState extends State<MyApp> {
               tip = 'buffering $percent%';
             });
           } else {
-            /*  final res = await _fvp.getMediaInfo(),
+            final res = await _fvp.getMediaInfo(),
                 videoCodec = res!["video"]["codec"] ?? {};
-            debugPrint(
+            debugPrint('媒体信息 $res');
+            /*  debugPrint(
                 'media info ${videoCodec["width"]} ${videoCodec["height"]}');
             _fvp.setVideoSurfaceSize(
-                videoCodec["width"] as int, videoCodec["height"] as int); */
+                videoCodec["width"] as int, videoCodec["height"] as int);  */
             setState(() {
               tip = '';
             });
@@ -111,10 +123,10 @@ class _MyAppState extends State<MyApp> {
       }
     });
     _fvp.onRenderCallback((String msg) {
-      debugPrint('【render】 $msg');
+      //  debugPrint('【render】 $msg');
     });
     _fvp.setLogHandler((msg) async {
-      debugPrint('【log】 $msg');
+      //  debugPrint('【log】 $msg');
 
       //print('pos: $pos   buffered: $buff');
     });

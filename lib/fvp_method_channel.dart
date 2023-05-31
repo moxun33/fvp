@@ -30,14 +30,20 @@ class MethodChannelFvp extends FvpPlatform {
   }
 
   @override
-  Future<int> setMedia(String? url,
-      {String headers = '', String ua = ''}) async {
+  Future<int> setMedia(
+    String? url, {
+    String headers = '',
+    String ua = '',
+  }) async {
     if (!(url != null && url.isNotEmpty)) {
       return 0;
       // throw ArgumentError('url 不能为空');
     }
-    return (await methodChannel.invokeMethod(
-        'setMedia', {'url': url, 'headers': headers, 'ua': ua})) as int;
+    return (await methodChannel.invokeMethod('setMedia', {
+      'url': url,
+      'headers': headers,
+      'ua': ua,
+    })) as int;
   }
 
   @override
@@ -173,7 +179,7 @@ class MethodChannelFvp extends FvpPlatform {
   }
 
   @override
-  Future<int> setDecoder(String decoder, int type) async {
+  Future<int> setDecoder(String decoder, {int type = 0}) async {
     return (await methodChannel
         .invokeMethod('setDecoder', {'decoder': decoder, 'type': type}) as int);
   }

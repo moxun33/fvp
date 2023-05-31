@@ -173,16 +173,17 @@ namespace fvp
       result->Success(flutter::EncodableValue(texture_id_));
 
       //    player_.setLoop(-1);
-      player_.setDecoders(MediaType::Video, {"FFmpeg:hwaccel=rkmpp:hwcontext=dxva2",
-                                             "MFT:d3d=11",
-                                             "D3D11", "hap", "DXVA", "CUDA", "dav1d"});
+      player_.setDecoders(MediaType::Video, { "FFmpeg:hwaccel=rkmpp:hwcontext=dxva2","MFT:d3d=12",
+
+                                             "hap", "D3D11", "DXVA", "CUDA", "dav1d"});
       D3D11RenderAPI ra{};
       ra.rtv = tex_.Get();
       player_.setRenderAPI(&ra);
       player_.setVideoSurfaceSize(desc.Width, desc.Height);
       player_.setBackgroundColor(0, 0, 0, -1);
       player_.setProperty("user-agent", "Windows FVP ZTE");
-      // player_.setBufferRange(1000, INT64_MAX);
+
+      player_.setBufferRange(1000, INT64_MAX);
 
       SetGlobalOption("videoout.hdr", 1);
       SetGlobalOption("profiler.gpu", 1);
@@ -217,7 +218,7 @@ namespace fvp
                                         texture_registrar_->MarkTextureFrameAvailable(texture_id_);
                                            int64_t pts = player_.position();
                                           int64_t bfd = player_.buffered();
-                                          // cout<<"pts "<< pts/1000 <<" buffered "<<bfd/1000<<endl;
+                                         // cout<<"pts "<< pts/1000 <<" buffered "<<bfd/1000<<endl;
                                           channel->InvokeMethod("onRenderCallback", make_unique<flutter::EncodableValue>(EncodableValue(EncodableMap{
                                                                                         {EncodableValue("position"), EncodableValue(pts)},
                                                                                         {EncodableValue("buffered"), EncodableValue(bfd)},
@@ -271,8 +272,8 @@ namespace fvp
       string log = strArg(*argsList, "level");
 
       string ffmpeg = strArg(*argsList, "ffmpegLevel");
-      SetGlobalOption("log", !log.empty() ? log.c_str() : "All");
-      SetGlobalOption("ffmpeg.loglevel", !ffmpeg.empty() ? ffmpeg.c_str() : "debug");
+      // SetGlobalOption("log", !log.empty() ? log.c_str() : "All");
+      //  SetGlobalOption("ffmpeg.loglevel", !ffmpeg.empty() ? ffmpeg.c_str() : "debug");
       // string t = strArg(*argsList, "level");
       //  SetGlobalOption("log", t);
       setLogHandler([&](LogLevel l, const char *s)
@@ -297,6 +298,7 @@ namespace fvp
       string url = strArg(*argsList, "url");
       string headers = strArg(*argsList, "headers");
       string ua = strArg(*argsList, "ua");
+      string deinterlace = strArg(*argsList, "deinterlace"); // yes or no
 
       cout << "to set new media " << url << endl;
       player_.setProperty("headers", headers);
@@ -310,7 +312,10 @@ namespace fvp
       player_.setMedia(url.c_str());
       player_.set(State::Playing);
       // player_.waitFor(State::Playing);
-
+      if (deinterlace == "yes")
+      {
+        player_.setProperty("video.avfilter", "yadif");
+      }
       // player_.setActiveTracks(MediaType::Video,set(0));
       // auto &c = player_.mediaInfo().video[0].codec;
       // player_.setVideoSurfaceSize(c.width, c.height);
@@ -568,6 +573,17 @@ namespace fvp
       string k = strArg(*argsList, "key");
       string v = strArg(*argsList, "value");
       player_.setProperty(k, v);
+      result->Success(EncodableValue(1));
+    }
+    if (methodName == "setDeinterlace")
+    {
+      string k = strArg(*argsList, "enable");
+
+      if (k == "yes")
+      {
+        player_.setProperty("video.avfilter", "yadif");
+      }
+
       result->Success(EncodableValue(1));
     }
     if (methodName == "getProperty")

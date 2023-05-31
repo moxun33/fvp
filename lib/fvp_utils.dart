@@ -32,3 +32,10 @@ class FvpMediaStatus {
 }
 
 enum LogLevel { off, error, warning, info, debug, all }
+
+const MediaType = {
+  'Unknown': -1,
+  'Video': 0,
+  'AudioComparable': 1,
+  'Subtitle': 3,
+};

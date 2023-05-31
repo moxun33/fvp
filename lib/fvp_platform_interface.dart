@@ -33,7 +33,11 @@ abstract class FvpPlatform extends PlatformInterface {
     throw UnimplementedError('createTexture() has not been implemented.');
   }
 
-  Future<int> setMedia(String url, {String headers = '', String ua = ''}) {
+  Future<int> setMedia(
+    String url, {
+    String headers = '',
+    String ua = '',
+  }) {
     throw UnimplementedError('setMedia() has not been implemented.');
   }
 
@@ -118,7 +122,7 @@ abstract class FvpPlatform extends PlatformInterface {
     throw UnimplementedError('setProperty() has not been implemented.');
   }
 
-  Future<int> setDecoder(String decoder, int type) {
+  Future<int> setDecoder(String decoder, {int type = 0}) {
     throw UnimplementedError('setDecoder() has not been implemented.');
   }
 
