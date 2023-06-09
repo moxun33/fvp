@@ -287,6 +287,7 @@ namespace fvp
     {
       // 停止播放
       player_.setNextMedia(nullptr, -1);
+      player_.setMute(true);
       player_.set(State::Stopped);
       player_.waitFor(State::Stopped);
       player_.setMedia(nullptr);
