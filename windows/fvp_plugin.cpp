@@ -173,7 +173,7 @@ namespace fvp
       result->Success(flutter::EncodableValue(texture_id_));
 
       //    player_.setLoop(-1);
-      player_.setDecoders(MediaType::Video, { "FFmpeg:hwaccel=rkmpp:hwcontext=dxva2","MFT:d3d=12",
+      player_.setDecoders(MediaType::Video, {"FFmpeg:hwaccel=rkmpp:hwcontext=dxva2", "MFT:d3d=12",
 
                                              "hap", "D3D11", "DXVA", "CUDA", "dav1d"});
       D3D11RenderAPI ra{};
@@ -312,6 +312,8 @@ namespace fvp
       player_.setMedia(nullptr);
       player_.setMedia(url.c_str());
       player_.set(State::Playing);
+      player_.setMute(false);
+
       // player_.waitFor(State::Playing);
       if (deinterlace == "yes")
       {
