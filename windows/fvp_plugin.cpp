@@ -173,9 +173,7 @@ namespace fvp
       result->Success(flutter::EncodableValue(texture_id_));
 
       //    player_.setLoop(-1);
-      player_.setDecoders(MediaType::Video, {"FFmpeg:hwaccel=rkmpp:hwcontext=dxva2", "MFT:d3d=12",
-
-                                             "hap", "D3D11", "DXVA", "CUDA", "dav1d"});
+      player_.setDecoders(MediaType::Video, {"MFT:d3d=11", "FFmpeg", "hap", "D3D11", "DXVA", "CUDA", "dav1d"});
       D3D11RenderAPI ra{};
       ra.rtv = tex_.Get();
       player_.setRenderAPI(&ra);

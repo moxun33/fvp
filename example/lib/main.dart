@@ -105,7 +105,7 @@ class _MyAppState extends State<MyApp> {
             });
           } else {
             final res = await _fvp.getMediaInfo(),
-                videoCodec = res!["video"]["codec"] ?? {};
+                videoCodec = res?["video"]["codec"] ?? {};
             debugPrint('媒体信息 $res');
             /*  debugPrint(
                 'media info ${videoCodec["width"]} ${videoCodec["height"]}');
